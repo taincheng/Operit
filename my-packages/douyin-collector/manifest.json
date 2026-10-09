@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "toolpkg_id": "com.taincheng.douyin_collector_bundle",
+  "version": "0.1.0",
+  "api_version": "1.0.0",
+  "main": "dist/main.js",
+  "display_name": {
+    "zh": "抖音采集",
+    "en": "Douyin Collector"
+  },
+  "description": {
+    "zh": "按关键词采集抖音搜索结果的分享链接，落盘到 records.jsonl 后批量上报到服务端。支持分片与断点续跑，附带一个定时采集与上报的工作流模板。",
+    "en": "Collect Douyin share links for a keyword, append them to records.jsonl and upload them to your server. Supports chunked resumable runs and ships a scheduled collect-and-upload workflow template."
+  },
+  "enabled_by_default": true,
+  "subpackages": [
+    {
+      "id": "douyin_collector",
+      "entry": "dist/packages/douyin_collector.js"
+    }
+  ],
+  "resources": [
+    {
+      "key": "douyin_workflow_collect_and_upload",
+      "path": "resources/workflow_collect_and_upload.json",
+      "mime": "application/json"
+    }
+  ],
+  "workflow_templates": [
+    {
+      "id": "douyin_scheduled_collect_and_upload",
+      "display_name": {
+        "zh": "定时采集抖音并上报",
+        "en": "Scheduled Douyin Collect and Upload"
+      },
+      "description": {
+        "zh": "每 15 分钟采一片搜索结果的分享链接，再把这批上报到服务端。导入后可以改关键词、条数与间隔。",
+        "en": "Every 15 minutes, collect one chunk of share links and upload them to your server. Edit the keyword, item count and interval after importing."
+      },
+      "resource_key": "douyin_workflow_collect_and_upload"
+    }
+  ]
+}
