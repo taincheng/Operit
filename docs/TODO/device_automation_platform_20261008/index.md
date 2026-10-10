@@ -186,6 +186,7 @@ your-operit-ext/
 - [05 设置界面与环境变量配置](05_settings_ui_and_env_config.md) —— 已完成，配置迁到 App 内设置页与环境变量，config.json 已废弃
 - [06 搜索结果集边界与遍历方式](06_search_result_boundary.md) —— 已完成，遍历改成分页驱动，推荐流不再被当成搜索结果
 - [07 记录的相关性与推广标记](07_record_relevance_markers.md) —— 已完成，客户端只打标记不过滤，判断权交给服务端
+- [08 自动化状态浮窗与采集期间保亮](08_automation_status_overlay_and_keepawake.md) —— 暂缓，未实施；结论与分层方案已记录
 
 ## 交给服务端开发的文档
 
