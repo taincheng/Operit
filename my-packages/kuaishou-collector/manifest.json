@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "toolpkg_id": "com.taincheng.kuaishou_collector_bundle",
+  "version": "0.3.0",
+  "api_version": "1.0.0",
+  "main": "dist/main.js",
+  "display_name": {
+    "zh": "快手采集",
+    "en": "Kuaishou Collector"
+  },
+  "description": {
+    "zh": "按关键词采集快手搜索结果的作品分享链接，落盘到 records.jsonl 后批量上报到服务端。支持分片与断点续跑，附带一个连续采集与上报的工作流模板。",
+    "en": "Collect Kuaishou share links for a keyword, append them to records.jsonl and upload them to your server. Supports chunked resumable runs and ships a continuous collect-and-upload workflow template."
+  },
+  "enabled_by_default": true,
+  "subpackages": [
+    {
+      "id": "ks_collector",
+      "entry": "dist/packages/ks_collector.js"
+    }
+  ],
+  "resources": [
+    {
+      "key": "ks_workflow_collect_and_upload",
+      "path": "resources/workflow_collect_and_upload.json",
+      "mime": "application/json"
+    }
+  ],
+  "workflow_templates": [
+    {
+      "id": "ks_scheduled_collect_and_upload",
+      "display_name": {
+        "zh": "连续采集快手并上报",
+        "en": "Continuous Kuaishou Collect and Upload"
+      },
+      "description": {
+        "zh": "一轮采一片搜索结果的分享链接并上报，整轮结束后随机等 30–120 秒接着跑下一轮。导入后可以改关键词、条数与间隔。",
+        "en": "Each round collects one chunk of share links and uploads it, then waits a random 30–120 seconds before the next round. Edit the keyword, item count and gap after importing."
+      },
+      "resource_key": "ks_workflow_collect_and_upload"
+    }
+  ]
+}
