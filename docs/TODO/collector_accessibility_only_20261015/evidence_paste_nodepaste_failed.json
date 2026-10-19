@@ -1,0 +1,635 @@
+{
+    "success": true,
+    "scriptPath": "/sdcard/Android/data/com.ai.assistance.operit.debug/js_temp/probe_ax_only.js",
+    "functionName": "pasteProbe",
+    "params": {},
+    "startedAtMs": 1792056835789,
+    "finishedAtMs": 1792056863053,
+    "durationMs": 27264,
+    "result": {
+        "ok": false,
+        "failedStep": "长按后节点树里没有可见的「粘贴」节点",
+        "page": {
+            "packageName": "com.ss.android.ugc.aweme",
+            "activityName": "android.widget.FrameLayout",
+            "nodeCount": 792,
+            "texts": [
+                "2086",
+                "39",
+                "347",
+                "1762",
+                "15.8km",
+                "|",
+                "俏婶娘贵阳铁板烧",
+                "·",
+                "美食人气榜",
+                "在深圳坂田吃到了贵州铁板烧！！真的好好吃😭 #美食 #大口吃肉的快乐 #... 展开",
+                "@梅酱紫吃什么",
+                " · 08月12日",
+                "相关搜索",
+                "俏婶娘贵阳铁板烧团购",
+                "搜你想看的",
+                "搜索",
+                "发条评论，说说你的感受",
+                "同时发布为作品",
+                "发送"
+            ],
+            "contentDescs": [
+                "关注",
+                "梅酱紫吃什么",
+                "未点赞，喜欢2086，按钮",
+                "评论39，按钮",
+                "评论39，按钮",
+                "未选中，收藏347，按钮",
+                "分享1762，按钮",
+                "音乐，@梅酱紫吃什么创作的原声，按钮",
+                "发弹幕，按钮",
+                "发布时间：08月12日",
+                "点击查看更多，按钮",
+                "暂停视频，按钮",
+                "冯校长老火锅(福田皇岗…﻿",
+                "4.9",
+                "超赞",
+                "¥107/人",
+                "12.0km",
+                "皇岗",
+                "详情",
+                "50元代金券【广东省通用】"
+            ]
+        },
+        "clickableAfterLongPress": [
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/root_layout",
+                "bounds": "[0,0][1080,2267]",
+                "clickable": true
+            },
+            {
+                "className": "View",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/510",
+                "bounds": "[908,884][1079,1103]",
+                "clickable": true
+            },
+            {
+                "className": "Button",
+                "text": "",
+                "contentDesc": "关注",
+                "resourceId": "com.ss.android.ugc.aweme:id/j1c",
+                "bounds": "[908,1021][1079,1103]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "梅酱紫吃什么",
+                "resourceId": "com.ss.android.ugc.aweme:id/user_avatar",
+                "bounds": "[925,926][1060,1061]",
+                "clickable": true
+            },
+            {
+                "className": "LinearLayout",
+                "text": "",
+                "contentDesc": "未点赞，喜欢2086，按钮",
+                "resourceId": "com.ss.android.ugc.aweme:id/gln",
+                "bounds": "[910,1103][1079,1290]",
+                "clickable": true
+            },
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/gk2",
+                "bounds": "[910,1103][1079,1249]",
+                "clickable": true
+            },
+            {
+                "className": "TextView",
+                "text": "2086",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/gk3",
+                "bounds": "[956,1226][1032,1290]",
+                "clickable": true
+            },
+            {
+                "className": "LinearLayout",
+                "text": "",
+                "contentDesc": "评论39，按钮",
+                "resourceId": "com.ss.android.ugc.aweme:id/euu",
+                "bounds": "[910,1290][1079,1477]",
+                "clickable": true
+            },
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/comment_container",
+                "bounds": "[910,1290][1079,1436]",
+                "clickable": true
+            },
+            {
+                "className": "TextSwitcher",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/em=",
+                "bounds": "[975,1413][1013,1477]",
+                "clickable": true
+            },
+            {
+                "className": "LinearLayout",
+                "text": "",
+                "contentDesc": "未选中，收藏347，按钮",
+                "resourceId": "com.ss.android.ugc.aweme:id/d-c",
+                "bounds": "[908,1477][1079,1662]",
+                "clickable": true
+            },
+            {
+                "className": "LinearLayout",
+                "text": "",
+                "contentDesc": "分享1762，按钮",
+                "resourceId": "com.ss.android.ugc.aweme:id/zxd",
+                "bounds": "[910,1662][1079,1849]",
+                "clickable": true
+            },
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/share_container",
+                "bounds": "[910,1662][1079,1808]",
+                "clickable": true
+            },
+            {
+                "className": "TextView",
+                "text": "1762",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/zrx",
+                "bounds": "[956,1785][1032,1849]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/s25",
+                "bounds": "[931,1872][1055,1996]",
+                "clickable": true
+            },
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "",
+                "bounds": "[20,1545][132,1654]",
+                "clickable": true
+            },
+            {
+                "className": "LinearLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/qku",
+                "bounds": "[34,1659][822,1751]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/nve",
+                "bounds": "[51,1677][107,1733]",
+                "clickable": true
+            },
+            {
+                "className": "TextView",
+                "text": "15.8km",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/2jq",
+                "bounds": "[124,1678][254,1731]",
+                "clickable": true
+            },
+            {
+                "className": "LinearLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/qkv",
+                "bounds": "[271,1676][608,1734]",
+                "clickable": true
+            },
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/gag",
+                "bounds": "[0,1836][818,1990]",
+                "clickable": true
+            },
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/gbh",
+                "bounds": "[33,1836][818,1979]",
+                "clickable": true
+            },
+            {
+                "className": "TextView",
+                "text": "在深圳坂田吃到了贵州铁板烧！！真的好好吃😭 #美食 #大口吃肉的快乐 #... 展开",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/desc",
+                "bounds": "[33,1836][818,1979]",
+                "clickable": true
+            },
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/nua",
+                "bounds": "[33,1767][578,1837]",
+                "clickable": true
+            },
+            {
+                "className": "TextView",
+                "text": "@梅酱紫吃什么",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/title",
+                "bounds": "[33,1767][357,1837]",
+                "clickable": true
+            },
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/6ka",
+                "bounds": "[363,1772][578,1833]",
+                "clickable": true
+            },
+            {
+                "className": "ViewGroup",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/container",
+                "bounds": "[0,2016][1080,2129]",
+                "clickable": true
+            },
+            {
+                "className": "View",
+                "text": "",
+                "contentDesc": "暂停视频，按钮",
+                "resourceId": "com.ss.android.ugc.aweme:id/qde",
+                "bounds": "[0,0][1080,2129]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "返回",
+                "resourceId": "com.ss.android.ugc.aweme:id/back_btn",
+                "bounds": "[17,104][152,239]",
+                "clickable": true
+            },
+            {
+                "className": "ViewGroup",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/piz",
+                "bounds": "[152,121][1063,222]",
+                "clickable": true
+            },
+            {
+                "className": "TextView",
+                "text": "搜索",
+                "contentDesc": "搜索",
+                "resourceId": "com.ss.android.ugc.aweme:id/48-",
+                "bounds": "[945,121][1029,222]",
+                "clickable": true
+            },
+            {
+                "className": "LinearLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/t8r",
+                "bounds": "[0,0][1080,2267]",
+                "clickable": true
+            },
+            {
+                "className": "View",
+                "text": "",
+                "contentDesc": "返回，按钮",
+                "resourceId": "com.ss.android.ugc.aweme:id/t8q",
+                "bounds": "[0,0][1080,2267]",
+                "clickable": true
+            },
+            {
+                "className": "View",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/hzh",
+                "bounds": "[0,942][1080,1382]",
+                "clickable": true
+            },
+            {
+                "className": "ViewGroup",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/cti",
+                "bounds": "[34,966][1046,1133]",
+                "clickable": true
+            },
+            {
+                "className": "EditText",
+                "text": "发条评论，说说你的感受",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/enc",
+                "bounds": "[34,966][1040,1105]",
+                "clickable": true
+            },
+            {
+                "className": "LinearLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/fz=",
+                "bounds": "[56,1133][364,1257]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "插入图片",
+                "resourceId": "",
+                "bounds": "[34,1257][124,1381]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "at",
+                "resourceId": "",
+                "bounds": "[197,1257][287,1381]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "表情",
+                "resourceId": "",
+                "bounds": "[360,1257][450,1381]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "语音评论",
+                "resourceId": "",
+                "bounds": "[523,1257][613,1381]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "插入地点",
+                "resourceId": "",
+                "bounds": "[686,1257][776,1381]",
+                "clickable": true
+            },
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/eri",
+                "bounds": "[900,1257][1046,1370]",
+                "clickable": true
+            },
+            {
+                "className": "FrameLayout",
+                "text": "",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/uep",
+                "bounds": "[0,1382][1080,2267]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "[赞]",
+                "resourceId": "com.ss.android.ugc.aweme:id/h6e",
+                "bounds": "[56,1404][124,1472]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "[玫瑰]",
+                "resourceId": "com.ss.android.ugc.aweme:id/h6e",
+                "bounds": "[184,1404][252,1472]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "[捂脸]",
+                "resourceId": "com.ss.android.ugc.aweme:id/h6e",
+                "bounds": "[312,1404][380,1472]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "[666]",
+                "resourceId": "com.ss.android.ugc.aweme:id/h6e",
+                "bounds": "[440,1404][508,1472]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "[鼓掌]",
+                "resourceId": "com.ss.android.ugc.aweme:id/h6e",
+                "bounds": "[568,1404][636,1472]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "[呲牙]",
+                "resourceId": "com.ss.android.ugc.aweme:id/h6e",
+                "bounds": "[696,1404][764,1472]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "[微笑]",
+                "resourceId": "com.ss.android.ugc.aweme:id/h6e",
+                "bounds": "[824,1404][892,1472]",
+                "clickable": true
+            },
+            {
+                "className": "ImageView",
+                "text": "",
+                "contentDesc": "[耶]",
+                "resourceId": "com.ss.android.ugc.aweme:id/h6e",
+                "bounds": "[952,1404][1020,1472]",
+                "clickable": true
+            }
+        ],
+        "editTextsAfterLongPress": [
+            {
+                "className": "EditText",
+                "text": "发条评论，说说你的感受",
+                "contentDesc": "",
+                "resourceId": "com.ss.android.ugc.aweme:id/enc",
+                "bounds": "[34,966][1040,1105]",
+                "clickable": true
+            }
+        ],
+        "trace": [
+            {
+                "step": "detailPage",
+                "reused": false,
+                "page": {
+                    "packageName": "com.ss.android.ugc.aweme",
+                    "activityName": "com.ss.android.ugc.aweme.main.MainActivity",
+                    "nodeCount": 73,
+                    "texts": [],
+                    "contentDescs": [
+                        "视频",
+                        "侧边栏",
+                        "搜索",
+                        "搜索"
+                    ]
+                }
+            },
+            {
+                "step": "resultCard",
+                "node": {
+                    "className": "View",
+                    "text": "",
+                    "contentDesc": "视频封面",
+                    "resourceId": "com.ss.android.ugc.aweme:id/qde",
+                    "bounds": "[56,744][723,1633]",
+                    "clickable": true
+                }
+            },
+            {
+                "step": "shareButton",
+                "node": {
+                    "className": "LinearLayout",
+                    "text": "",
+                    "contentDesc": "分享1762，按钮",
+                    "resourceId": "com.ss.android.ugc.aweme:id/zxd",
+                    "bounds": "[911,1663][1080,1850]",
+                    "clickable": true
+                }
+            },
+            {
+                "step": "shareItem",
+                "node": {
+                    "className": "TextView",
+                    "text": "分享链接",
+                    "contentDesc": "",
+                    "resourceId": "com.ss.android.ugc.aweme:id/zs-",
+                    "bounds": "[980,2140][1080,2184]",
+                    "clickable": false
+                }
+            },
+            {
+                "step": "copiedHint",
+                "ok": true
+            },
+            {
+                "step": "closePanelBack",
+                "result": "[object Object]"
+            },
+            {
+                "step": "afterClosePanelBack",
+                "panelStillOpen": false,
+                "page": {
+                    "packageName": "com.ss.android.ugc.aweme",
+                    "activityName": "com.ss.android.ugc.aweme.detail.ultra.ui.UltraDetailActivity",
+                    "nodeCount": 749,
+                    "texts": [
+                        "2086",
+                        "39",
+                        "347",
+                        "1762",
+                        "15.8km",
+                        "|",
+                        "俏婶娘贵阳铁板烧",
+                        "·",
+                        "美食人气榜",
+                        "在深圳坂田吃到了贵州铁板烧！！真的好好吃😭 #美食 #大口吃肉的快乐 #... 展开",
+                        "@梅酱紫吃什么",
+                        " · 08月12日",
+                        "相关搜索",
+                        "俏婶娘贵阳铁板烧团购",
+                        "搜你想看的",
+                        "搜索",
+                        "发条评论，说说你的感受"
+                    ],
+                    "contentDescs": [
+                        "关注",
+                        "梅酱紫吃什么",
+                        "未点赞，喜欢2086，按钮",
+                        "评论39，按钮",
+                        "评论39，按钮",
+                        "未选中，收藏347，按钮",
+                        "分享1762，按钮",
+                        "音乐，@梅酱紫吃什么创作的原声，按钮",
+                        "发弹幕，按钮",
+                        "发布时间：08月12日",
+                        "点击查看更多，按钮",
+                        "暂停视频，按钮",
+                        "冯校长老火锅(福田皇岗…﻿",
+                        "4.9",
+                        "超赞",
+                        "¥107/人",
+                        "12.0km",
+                        "皇岗",
+                        "详情",
+                        "50元代金券【广东省通用】"
+                    ]
+                }
+            },
+            {
+                "step": "editText",
+                "node": {
+                    "className": "EditText",
+                    "text": "发条评论，说说你的感受",
+                    "contentDesc": "",
+                    "resourceId": "com.ss.android.ugc.aweme:id/enc",
+                    "bounds": "[79,2166][692,2233]",
+                    "clickable": true
+                }
+            },
+            {
+                "step": "editTextAfterTap",
+                "node": {
+                    "className": "EditText",
+                    "text": "发条评论，说说你的感受",
+                    "contentDesc": "",
+                    "resourceId": "com.ss.android.ugc.aweme:id/enc",
+                    "bounds": "[34,966][1040,1105]",
+                    "clickable": true
+                }
+            },
+            {
+                "step": "longPress",
+                "point": {
+                    "x": 537,
+                    "y": 1036
+                },
+                "result": "[object Object]"
+            },
+            {
+                "step": "pasteCandidates",
+                "nodes": []
+            }
+        ]
+    },
+    "events": [
+        "completed: {\"ok\":false,\"failedStep\":\"长按后节点树里没有可见的「粘贴」节点\",\"page\":{\"packageName\":\"com.ss.android.ugc.aweme\",\"activityName\":\"android.widget.FrameLayout\",\"nodeCount\":792,\"texts\":[\"2086\",\"39\",\"347\",\"1762\",\"15.8km\",\"|\",\"俏婶娘贵阳铁板烧\",\"·\",\"美食人气榜\",\"在深圳坂田吃到了贵州铁..."
+    ]
+}

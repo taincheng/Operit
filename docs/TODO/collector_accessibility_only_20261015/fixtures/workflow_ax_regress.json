@@ -1,0 +1,66 @@
+{
+    "id": "a0a1b2c3-0000-4000-8000-000000000002",
+    "name": "抖音采集回归（无障碍档，不依赖 Shizuku）",
+    "description": "只跑采集节点，不跑上报节点：验证无障碍档下取链闭环可用，且不往服务端写数据。count=1、chunk_minutes=3，首轮立即开始。",
+    "nodes": [
+        {
+            "__type": "com.ai.assistance.operit.data.model.TriggerNode",
+            "id": "trigger_ax_regress",
+            "name": "连续运行：每轮结束等 30–120 秒",
+            "description": "首轮立即跑，跑完随机等 30–120 秒",
+            "position": {
+                "x": 120.0,
+                "y": 120.0
+            },
+            "triggerType": "schedule",
+            "triggerConfig": {
+                "schedule_type": "continuous",
+                "min_gap_ms": "30000",
+                "max_gap_ms": "120000",
+                "enabled": "true"
+            }
+        },
+        {
+            "__type": "com.ai.assistance.operit.data.model.ExecuteNode",
+            "id": "execute_ax_regress",
+            "name": "采一条分享链接",
+            "description": "keyword=美食, count=1, chunk_minutes=3",
+            "position": {
+                "x": 760.0,
+                "y": 290.0
+            },
+            "actionType": "douyin_collector:douyin_collect_share_links",
+            "actionConfig": {
+                "keyword": {
+                    "__type": "com.ai.assistance.operit.data.model.ParameterValue.StaticValue",
+                    "value": "美食"
+                },
+                "count": {
+                    "__type": "com.ai.assistance.operit.data.model.ParameterValue.StaticValue",
+                    "value": "1"
+                },
+                "chunk_minutes": {
+                    "__type": "com.ai.assistance.operit.data.model.ParameterValue.StaticValue",
+                    "value": "3"
+                }
+            },
+            "jsCode": null
+        }
+    ],
+    "connections": [
+        {
+            "id": "conn_ax_regress",
+            "sourceNodeId": "trigger_ax_regress",
+            "targetNodeId": "execute_ax_regress",
+            "condition": null
+        }
+    ],
+    "createdAt": 1792059288459,
+    "updatedAt": 1792059288459,
+    "enabled": true,
+    "lastExecutionTime": null,
+    "lastExecutionStatus": null,
+    "totalExecutions": 0,
+    "successfulExecutions": 0,
+    "failedExecutions": 0
+}

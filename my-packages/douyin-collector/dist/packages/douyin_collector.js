@@ -6,8 +6,8 @@
         "en": "Douyin Collector"
     },
     "description": {
-        "zh": "采集抖音搜索结果的分享链接并上报。逐条取链后落盘到 records.jsonl，再由 outbox 批量上报到服务端。",
-        "en": "Collect share links from Douyin search results and upload them. Each link is appended to records.jsonl, and the outbox uploads them in batches."
+        "zh": "采集抖音搜索结果的分享链接与点赞/评论/收藏计数并上报。逐条取链后落盘到 records.jsonl，再由 outbox 批量上报到服务端；再次采到同一个视频时就地更新那一行的三个计数。",
+        "en": "Collect share links plus like/comment/collect counts from Douyin search results and upload them. Each link is appended to records.jsonl, the outbox uploads them in batches, and re-collecting a video updates that video's three counts in place."
     },
     "enabledByDefault": true,
     "category": "Automatic",
@@ -15,16 +15,16 @@
         {
             "name": "douyin_collect_share_link",
             "description": {
-                "zh": "取出当前打开的视频的分享链接。流程是点分享按钮、点面板里的「分享链接」，再从评论输入框回读剪贴板内容并清空。必须在视频详情页调用，它不会自己导航。",
-                "en": "Extract the share link of the video currently open on its Douyin detail page: open the share sheet, tap the copy-link item, then paste the clipboard into the comment field, read it back and clear it. Must be called on a video detail page; it does not navigate."
+                "zh": "取出当前打开的视频的分享链接、真实视频ID（content_id）与互动计数（点赞、评论、收藏）。流程是点分享按钮、点面板里的「分享链接」，再从评论输入框回读剪贴板内容并清空；三个计数在打开分享面板之前就从互动条的 content-desc 里读出来；content_id 由短链跳转后的分享页解析得到（短链码每次分享都会变，不能当视频身份）。必须在视频详情页调用，它不会自己导航。",
+                "en": "Extract the share link and the interaction counts (likes, comments, collects) of the video currently open on its Douyin detail page: open the share sheet, tap the copy-link item, then paste the clipboard into the comment field, read it back and clear it. The three counts are read from the interaction bar's content-desc before the share sheet opens. Must be called on a video detail page; it does not navigate."
             },
             "parameters": []
         },
         {
             "name": "douyin_collect_share_links",
             "description": {
-                "zh": "采集抖音搜索结果的分享链接，一次运行只做一片。自动切到「视频」标签，按结果页逐页取：读一页可见的卡片，点第一张进详情，在详情页内滑着把这一页取完，再回列表下滑取下一页。之所以不回列表逐张点，是为了省掉每条一次返回定位；之所以要按页约束，是因为详情页滑到结果集尽头会接到推荐流，实测把一批广告当成了关键词结果。每条记录立即追加到 records.jsonl 并建 pending 的 outbox 记录，已采集过的视频跳过。按条数目标或时间上限先到者结束本片，结果页翻到底也会结束，结束原因写进 progress.json。每条记录带 keyword_in_title 与 promo_hint 两个标记（标题是否含关键词、页面是否有推广标记），只标记不过滤，是否丢弃交由服务端决定。",
-                "en": "Collect share links from Douyin search results, one chunk per run. Switches to the Video tab and works page by page through the result grid: read the visible cards, open the first one, swipe within its detail feed to take the rest of that page, then go back and scroll to the next page. Staying bounded by pages matters because the detail feed rolls into recommendations once the search results run out, which in testing pulled a run of ads in as if they were results. Every record is appended to records.jsonl with a pending outbox entry; videos already collected are skipped. The chunk ends on the item target, the time limit, or an exhausted result list, and the reason is written to progress.json. Every record carries keyword_in_title and promo_hint markers (whether the title mentions the keyword, whether the page shows promo markers); they are markers only, so the server decides what to drop."
+                "zh": "采集抖音搜索结果的分享链接及其互动计数，一次运行只做一片。每条记录带真实视频ID（content_id，从短链跳转后的分享页解析），它就是「同一个视频」的判据——短链码每次分享都会变，不能当身份。自动切到「视频」标签，按结果页逐页取：读一页可见的卡片，点第一张进详情，在详情页内滑着把这一页取完，再回列表下滑取下一页。之所以不回列表逐张点，是为了省掉每条一次返回定位；之所以要按页约束，是因为详情页滑到结果集尽头会接到推荐流，实测把一批广告当成了关键词结果。每条记录立即追加到 records.jsonl 并建 pending 的 outbox 记录。每条都带点赞数、评论数、收藏数（读不到为 null）与互动条原文；已经在库里的视频不再跳过，而是重新取一次数、就地更新那一行，服务端按视频更新计数。按条数目标或时间上限先到者结束本片，结果页翻到底也会结束，结束原因写进 progress.json；条数目标按「新增 + 更新」一起算。每条记录带 keyword_in_title 与 promo_hint 两个标记（标题是否含关键词、页面是否有推广标记），只标记不过滤，是否丢弃交由服务端决定。",
+                "en": "Collect share links and their interaction counts from Douyin search results, one chunk per run. Switches to the Video tab and works page by page through the result grid: read the visible cards, open the first one, swipe within its detail feed to take the rest of that page, then go back and scroll to the next page. Staying bounded by pages matters because the detail feed rolls into recommendations once the search results run out, which in testing pulled a run of ads in as if they were results. Every record is appended to records.jsonl with a pending outbox entry. Each record carries the like, comment and collect counts (null when the page does not show one) plus the raw interaction-bar text; a video already in the store is no longer skipped but re-read and updated in place, and the server updates that video's counts. The chunk ends on the item target, the time limit, or an exhausted result list, and the reason is written to progress.json; the item target counts new items and updates together. Every record carries keyword_in_title and promo_hint markers (whether the title mentions the keyword, whether the page shows promo markers); they are markers only, so the server decides what to drop."
             },
             "parameters": [
                 {
@@ -35,7 +35,7 @@
                 },
                 {
                     "name": "count",
-                    "description": { "zh": "本片最多采集多少条，默认 1", "en": "Maximum items to collect in this chunk, default 1" },
+                    "description": { "zh": "本片最多处理多少条视频（新增 + 更新），默认 1。更新一条与新增一条的耗时相同，所以共用一个预算", "en": "Maximum videos to process in this chunk (new plus updated), default 1. Updating costs the same as collecting, so both share one budget" },
                     "type": "number",
                     "required": false
                 },
@@ -70,6 +70,14 @@
                 "en": "Report record and outbox counts: how many are pending, sent and failed, plus the file locations."
             },
             "parameters": []
+        },
+        {
+            "name": "douyin_migrate_upload_config",
+            "description": {
+                "zh": "把早期版本带 DOUYIN_ 前缀的上报配置键搬到中立键上，然后清空旧键。设置页加载时会自动调用；正常使用不需要手动跑。迁移完成后再调用是空操作。",
+                "en": "Move the upload configuration from the legacy DOUYIN_-prefixed keys to the neutral keys, then clear the legacy ones. The settings page calls this on load; there is no need to run it by hand. Calling it again after the migration is a no-op."
+            },
+            "parameters": []
         }
     ]
 }
@@ -86,11 +94,19 @@ const SHARE_BUTTON_DESC_PREFIX = "分享";
 const SHARE_PANEL_ITEM_TEXT = "分享链接";
 // 复制成功后弹出的提示层文案。
 const COPIED_HINT_TEXT = "链接已复制成功";
-// 关掉分享面板用返回键；面板是模态窗口，不关掉后面的节点都读不到。
-const KEYCODE_BACK = 4;
-const KEYCODE_PASTE = 279;
-const KEYCODE_DEL = 67;
-const CTRL_A_KEYCODES = "113 29";
+// 关掉分享面板与评论面板都用返回键。走无障碍的全局动作（GLOBAL_ACTION_BACK），
+// 不再用 shell 的 input keyevent 4：采集因此不再需要 Shizuku，权限档「无障碍」即可。
+// 面板是模态窗口，不关掉后面的节点都读不到。
+const BACK_KEY_CODE = "KEYCODE_BACK";
+// 长按评论输入框后抖音会弹出它自己的粘贴工具条，但那个工具条不在无障碍节点树里
+// （2026-10-15 实测：截图上【粘贴】清晰可见，同一时刻的树里没有任何含「粘贴」的节点，
+// 证据见 docs/TODO/collector_accessibility_only_20261015/），所以只能按坐标点它。
+// 坐标按「输入框左上角 + 偏移」推算，两个偏移量是抖音 37.8.0 / 1080x2400 上的实测值；
+// 换抖音版本或换分辨率需要重新量，量法见同目录的 probe_ax_only.js 的 pasteByToolbarProbe。
+const PASTE_BUTTON_OFFSET_X = 139;
+const PASTE_BUTTON_OFFSET_Y = -139;
+// 工具条有弹出动画，长按之后要等它可点。
+const PASTE_TOOLBAR_SETTLE_MS = 1200;
 // 无障碍档返回的 class 是简名，例如 EditText；shell 的 uiautomator 档返回全名，例如 android.widget.EditText。
 // 用简名配合部分匹配，两种档位都能命中。
 const EDIT_TEXT_CLASS = "EditText";
@@ -127,6 +143,104 @@ const PROMO_HINT_TERMS = [
 function hasPromoHint(root) {
     const texts = root.allTexts(true, true);
     return texts.some((text) => PROMO_HINT_TERMS.some((term) => text.includes(term)));
+}
+// ===== 互动计数（点赞 / 评论 / 收藏）=====
+//
+// 计数内嵌在互动条按钮的 content-desc 里，格式实测为「[状态，]标签<计数>，按钮」：
+//   未点赞，喜欢41.4万，按钮 / 评论7353，按钮 / 未选中，收藏7.1万，按钮
+// 证据：docs/TODO/douyin_video_counts_20261019/evidence_counts_high.json
+// （2026-10-19，抖音 37.8.0 / 1080x2400，家装关键词）。
+//
+// 三条必须知道的事实：
+//   1. 计数 ≥ 10000 时抖音缩写成一位小数的「万」（41.4万 / 1.0万），折成整数是有损的，
+//      所以原始 desc 文本也一并写进记录。
+//   2. 状态词会变（未点赞/已点赞、未选中/已选中），只能从标签后面取数字，不能整串比较。
+//   3. 无障碍树里同时留着上一条与下一条视频的互动条，实测它们的 bounds 是反向的
+//      （上一条 [911,0][1080,-725]、下一条 [911,3233][1080,2129]），所以取值必须先过可见性，
+//      否则会把邻居的计数记到当前视频头上。
+const LIKE_COUNT_LABEL = "喜欢";
+const COMMENT_COUNT_LABEL = "评论";
+const COLLECT_COUNT_LABEL = "收藏";
+// 标签后面的计数：整数或一位小数，可带「万」
+const COUNT_NUMBER_PATTERN = /^(\d+(?:\.\d+)?)(万?)/;
+/**
+ * 取某一个计数。
+ *
+ * 命中规则：desc 里含标签，且节点在可视区内。同一个计数在树里可能出现两次
+ * （实测「评论」既有 LinearLayout 也有一层 ImageView，两者 desc 相同），取首个即可。
+ *
+ * 「标签在、数字不在」按 null 记：没有证据说明那是 0 还是渲染没完成，
+ * 采集管道不能凭猜测造一个 0 出来。0 与 null 在库里的含义不同，服务端也据此区别对待。
+ */
+function readInteractionCount(root, label, screenHeight, rawTexts) {
+    const node = root.find((candidate) => {
+        const desc = candidate.contentDesc ?? "";
+        return desc.includes(label) && isNodeVisible(candidate, screenHeight);
+    }, true);
+    if (!node) {
+        return null;
+    }
+    const desc = node.contentDesc ?? "";
+    rawTexts.push(desc);
+    const matched = desc.slice(desc.indexOf(label) + label.length).match(COUNT_NUMBER_PATTERN);
+    if (!matched) {
+        return null;
+    }
+    const value = Number(matched[1]);
+    return matched[2] === "万" ? Math.round(value * 10000) : Math.round(value);
+}
+/** 一次读页面取出三个计数。调用点只有详情页那一次整页读。 */
+function readInteractionCounts(root, screenHeight) {
+    const rawTexts = [];
+    return {
+        like: readInteractionCount(root, LIKE_COUNT_LABEL, screenHeight, rawTexts),
+        comment: readInteractionCount(root, COMMENT_COUNT_LABEL, screenHeight, rawTexts),
+        collect: readInteractionCount(root, COLLECT_COUNT_LABEL, screenHeight, rawTexts),
+        text: rawTexts.join("|"),
+    };
+}
+// ===== 视频的真实身份（content_id）=====
+//
+// 短链码**不能**当视频身份：抖音每次「分享链接」都会生成一个新的 v.douyin.com 短码。
+// 2026-10-19 真机实测：同一个视频（贵州铁板烧）27 分钟内被采到 5 次，5 个短码互不相同，
+// 计数完全一样；跑完的 470 条记录里只有 98 个不同的视频，372 条是重复行。
+// 证据：docs/TODO/douyin_video_counts_20261019/evidence_records_after_run.jsonl
+//
+// 真实身份在短链跳转后的页面里：<link rel="canonical" href="https://www.douyin.com/video/<content_id>"/>。
+// 三个不同短码实测都跳到同一个 /share/video/7672977497508440818/，所以这个 id 是稳定的。
+// 取证：同目录 evidence_shortlink_redirects.txt 与 probe_content_id.js（Tools.Net.http 会自动跟随 302）。
+const CONTENT_ID_PATTERN = /rel="canonical"[^>]*href="https:\/\/www\.douyin\.com\/video\/(\d+)"/;
+// 分享页对非浏览器 UA 会返回不同的内容，用移动端 Safari 的 UA 实测能拿到含 canonical 的整页。
+const SHARE_PAGE_USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) EdgiOS/121.0.2277.107 Version/17.0 Mobile/15E148 Safari/604.1";
+const CONTENT_RESOLVE_CONNECT_TIMEOUT_MS = 10000;
+const CONTENT_RESOLVE_READ_TIMEOUT_MS = 15000;
+/**
+ * 从分享短链解析出稳定的视频身份 content_id。
+ *
+ * 解析失败直接抛错，绝不退回用短码当身份：短码每次都变，退回等于把重复行继续写进库，
+ * 而且这种错误在数据上要过很久才看得出来。抛错的代价是本片中断，这是可接受的——
+ * 换来的是「库里的身份一定是对的」。
+ */
+async function resolveContentId(shareUrl) {
+    const response = await Tools.Net.http({
+        url: shareUrl,
+        method: "GET",
+        headers: {
+            "User-Agent": SHARE_PAGE_USER_AGENT,
+            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+        },
+        connect_timeout: CONTENT_RESOLVE_CONNECT_TIMEOUT_MS,
+        read_timeout: CONTENT_RESOLVE_READ_TIMEOUT_MS,
+    });
+    if (response.statusCode !== 200) {
+        throw new Error(`解析视频身份失败：${shareUrl} 返回 HTTP ${response.statusCode}`);
+    }
+    const matched = String(response.content ?? "").match(CONTENT_ID_PATTERN);
+    if (!matched) {
+        throw new Error(`解析视频身份失败：${shareUrl} 的最终页里没有 canonical 视频地址（页面可能改版或被风控）`);
+    }
+    return matched[1];
 }
 async function readRoot() {
     const page = await Tools.UI.getPageInfo();
@@ -261,59 +375,113 @@ async function tapShareLinkItem(screenHeight) {
     throw new Error(`「${SHARE_PANEL_ITEM_TEXT}」始终处于可视区外，无法点击`);
 }
 /**
- * 在当前视频详情页取一次分享链接。
+ * 在当前视频详情页取一次分享链接与互动计数。
  *
  * 步骤固定为：点分享按钮 → 点面板里的「分享链接」→ 等复制成功提示 → 关掉面板 → 从评论输入框回读。
  * 单条工具与批量采集共用这一段，避免两处逻辑各自漂移。
  *
  * 分享按钮用带可见性判断的定位，并把它当时的 content-desc 一并返回：
  * 批量采集靠这个 desc 里的计数变化判断是否真的切到了下一个视频。
+ *
+ * 互动计数与推广标记共用同一次整页读，挂在点分享按钮之前：那一刻互动条完整在画面里
+ * （waitForDetailShareButton 刚确认过），而分享面板一打开就变成模态窗口，下层节点读不到了。
  */
 async function extractShareLinkOnDetailPage(screenHeight) {
     const shareButton = await waitForDetailShareButton(screenHeight);
     const shareDesc = shareButton.contentDesc ?? "";
-    // 详情页此刻是最完整的，先把推广标记读出来
-    const promoHint = hasPromoHint(UINode.fromPageInfo(await Tools.UI.getPageInfo()));
+    // 详情页此刻是最完整的：推广标记与三个互动计数都用这一次读
+    const detailRoot = UINode.fromPageInfo(await Tools.UI.getPageInfo());
+    const promoHint = hasPromoHint(detailRoot);
+    const counts = readInteractionCounts(detailRoot, screenHeight);
     await tapNode(shareButton, "分享按钮");
     await tapShareLinkItem(screenHeight);
     await waitForNode((root) => root.findByText(COPIED_HINT_TEXT, { exact: false }), COPIED_HINT_TEXT);
-    // 分享面板是模态窗口，用返回键关掉之后详情页的节点才回到节点树里
-    await Tools.System.shell(`input keyevent ${KEYCODE_BACK}`);
+    // 分享面板是模态窗口，用返回键关掉之后详情页的节点才回到节点树里。
+    // 走无障碍全局动作，不用 shell：无障碍档下没有 shell。
+    await Tools.UI.pressKey(BACK_KEY_CODE);
     await Tools.System.sleep(UI_SETTLE_MS);
-    const { url, shareText } = await pasteAndReadShareText();
-    return { url, shareText, shareDesc, promoHint };
+    const { url, shareText } = await pasteAndReadShareText(screenHeight);
+    // 短码不是身份，必须再解析一次真实 content_id（见 resolveContentId 的说明）。
+    // 放在取链之后：这一步只发一个 HTTP 请求，不依赖界面，评论输入框此时也已经清空。
+    const contentId = await resolveContentId(url);
+    console.log(`视频身份解析成功：${url} -> content_id=${contentId}`);
+    return { url, shareText, shareDesc, promoHint, counts, contentId };
 }
 async function douyin_collect_share_link() {
     await ensureDouyinForeground();
     const screenHeight = await readScreenHeight();
-    const { url, shareText } = await extractShareLinkOnDetailPage(screenHeight);
+    const { url, shareText, counts, contentId } = await extractShareLinkOnDetailPage(screenHeight);
     return {
         success: true,
         url,
         shareText,
+        contentId,
+        likeCount: counts.like,
+        commentCount: counts.comment,
+        collectCount: counts.collect,
+        interactionText: counts.text,
     };
+}
+/**
+ * 取节点边界的左上角。解析不出来（或落到屏幕外）就报错，
+ * 不能让它带着 MAX_SAFE_INTEGER 之类的哨兵值去点击，那会把点击落到别的地方。
+ */
+function requireTopLeft(node, what) {
+    const matched = (node.bounds ?? "").match(/^\[(-?\d+),(-?\d+)\]/);
+    if (!matched) {
+        throw new Error(`${what}的边界无法解析：${node.bounds ?? "(无边界)"}`);
+    }
+    const x = Number(matched[1]);
+    const y = Number(matched[2]);
+    if (x < 0 || y < 0) {
+        throw new Error(`${what}的边界落在屏幕外：${node.bounds}`);
+    }
+    return { x, y };
 }
 /**
  * 读取剪贴板里的分享文本并抽出链接。
  *
- * 这里用「粘贴进输入框再读回」而不是 read_clipboard，是实测决定的：
+ * 这里用「粘贴进评论输入框再读回」而不是 read_clipboard，是实测决定的：
  * Android 10 起只有获得焦点的应用才能读系统剪贴板，采集时前台是抖音，
  * 后台的 Operit 用 read_clipboard 只能读到空字符串。粘贴回读不受这条限制。
  * 粘贴目标必须是详情页的评论输入框，不能是搜索框，否则会触发重新搜索。
+ *
+ * 粘贴这一步也让抖音自己做：长按评论框弹出它自己的工具条，再点工具条上的「粘贴」。
+ * 于是整条取链链路不需要 shell，权限档「无障碍」就能跑（不再需要 Shizuku）。
+ * 工具条不在节点树里、只能按坐标点的原因与重测方法见 PASTE_BUTTON_OFFSET_* 的注释。
  */
-async function pasteAndReadShareText() {
+async function pasteAndReadShareText(screenHeight) {
     const input = await waitForNode(findEditText, "输入框");
     await tapNode(input, "输入框");
-    await Tools.System.sleep(UI_SETTLE_MS);
+    // 点一下会打开评论输入面板，输入框从底栏移进面板，位置会变：长按的坐标必须重新读，
+    // 用点击前那份坐标长按会落在别处（实测过，长按因此完全没生效）。
+    await Tools.System.sleep(UI_SETTLE_MS * 2);
     // 粘上之后无论成败都必须清空。清理一旦放回成功路径，回读超时就会把粘贴内容
     // 留在评论框里成一条草稿，而且下一条会接在它后面。
     try {
-        await Tools.System.shell(`input keyevent ${KEYCODE_PASTE}`);
+        const panelInput = await waitForNode((root) => {
+            const edit = findEditText(root);
+            return edit && isNodeVisible(edit, screenHeight) ? edit : undefined;
+        }, "评论面板里的输入框");
+        const panelPoint = panelInput.centerPoint;
+        if (!panelPoint) {
+            throw new Error(`评论面板的输入框没有可用坐标：${panelInput.bounds ?? "(无边界)"}`);
+        }
+        // 工具条的按钮集合取决于输入框里有没有文本：空的时候最左是「粘贴」，
+        // 里面有草稿时会变成「全选 / 复制 / 粘贴」，最左边就不是「粘贴」了，坐标会点错。
+        // 所以长按之前先把输入框置空，让这一击的前提确定；上一轮的清理走到 finally，
+        // 正常情况下本来就是空的，这一步是给「上一轮清理没成功」兜住前提，不换路径。
+        await toolCall("set_input_text", { text: "" });
+        await Tools.System.sleep(UI_SETTLE_MS);
+        await Tools.UI.longPress(panelPoint.x, panelPoint.y);
+        await Tools.System.sleep(PASTE_TOOLBAR_SETTLE_MS);
+        const panelTopLeft = requireTopLeft(panelInput, "评论面板的输入框");
+        await Tools.UI.tap(panelTopLeft.x + PASTE_BUTTON_OFFSET_X, panelTopLeft.y + PASTE_BUTTON_OFFSET_Y);
         const filled = await waitForNode((root) => {
             const edit = findEditText(root);
             const text = edit?.text ?? "";
             return DOUYIN_SHARE_URL_PATTERN.test(text) ? edit : undefined;
-        }, "粘贴后的分享文本");
+        }, "粘贴后的分享文本（长按评论框弹出的工具条上的「粘贴」）");
         const shareText = filled.text ?? "";
         const matched = shareText.match(DOUYIN_SHARE_URL_PATTERN);
         if (!matched) {
@@ -335,16 +503,23 @@ function pasteMismatchMessage(shareText) {
     const preview = shareText.trim().slice(0, 40);
     return `粘进来的内容里没有抖音分享链接，复制那一步可能没生效。内容开头：${preview || "(空)"}`;
 }
-/** 清空评论输入框并收起面板与键盘，回到视频详情页。 */
+/**
+ * 清空评论输入框并收起面板与键盘，回到视频详情页。
+ *
+ * 清空走宿主的 set_input_text（provider 的 setTextOnNode），不再用 shell 的 Ctrl+A 和 DEL：
+ * 无障碍档下没有 shell，而且 setTextOnNode 是整体替换语义，不依赖光标位置。
+ * JS 侧目前没有 Tools.UI.setInputText 封装，所以按工具名直接调；封装见
+ * docs/TODO/collector_accessibility_only_20261015/02_provider_action_paste.md 的宿主清单。
+ */
 async function clearCommentInput() {
-    await Tools.System.shell(`input keycombination ${CTRL_A_KEYCODES}`);
-    await Tools.System.shell(`input keyevent ${KEYCODE_DEL}`);
+    await toolCall("set_input_text", { text: "" });
     await Tools.System.sleep(UI_SETTLE_MS);
-    await Tools.System.shell(`input keyevent ${KEYCODE_BACK}`);
+    await Tools.UI.pressKey(BACK_KEY_CODE);
     await Tools.System.sleep(UI_SETTLE_MS);
 }
 const DEFAULT_COLLECT_COUNT = 1;
-// 连续命中已采集过的视频到这个数就停，避免在同一个列表里空转
+// 本片内连续遇到已经处理过的视频到这个数就停，避免在同一段列表里空转。
+// 注意它守的是「本片内重复」：库里已有的视频不再跳过，而是重新取数并更新。
 const MAX_CONSECUTIVE_SKIPS = 10;
 // 单片时间上限。脚本硬超时是 30 分钟，这里留出安全边际，默认 18 分钟，最多允许 20 分钟。
 const DEFAULT_CHUNK_MINUTES = 18;
@@ -389,11 +564,16 @@ function isNodeVisible(node, screenHeight) {
     }
     return point.y > VISIBLE_TOP_MARGIN && point.y < screenHeight - APP_BOTTOM_INSET;
 }
+/**
+ * 屏幕高度。走宿主的 device_info（DisplayMetrics），不再用 shell 的 wm size：
+ * 无障碍档下 execute_shell 直接不可用，而 device_info 与 wm size 在同一台机器上取值一致
+ * （2026-10-15 实测都是 1080x2400）。
+ */
 async function readScreenHeight() {
-    const result = await Tools.System.shell("wm size");
-    const matched = result.output.match(/(\d+)\s*x\s*(\d+)/);
+    const info = await Tools.System.getDeviceInfo();
+    const matched = info.screenResolution.match(/(\d+)\s*x\s*(\d+)/);
     if (!matched) {
-        throw new Error(`无法从 wm size 解析屏幕高度：${result.output.trim()}`);
+        throw new Error(`无法从 device_info 的 screenResolution 解析屏幕高度：${info.screenResolution}`);
     }
     return Number(matched[2]);
 }
@@ -489,7 +669,7 @@ async function ensureVideoVisible(screenHeight) {
             return button;
         }
         console.log(`第 ${attempt + 1} 次检查：互动条不在画面里，按返回键关评论面板`);
-        await Tools.System.shell(`input keyevent ${KEYCODE_BACK}`);
+        await Tools.UI.pressKey(BACK_KEY_CODE);
         await Tools.System.sleep(VIDEO_SWITCH_SETTLE_MS);
     }
     const root = await readRoot();
@@ -536,10 +716,15 @@ const RECORDS_FILE = `${CONFIG_DIR}/records.jsonl`;
 const OUTBOX_FILE = `${CONFIG_DIR}/outbox.json`;
 const PROGRESS_FILE = `${CONFIG_DIR}/progress.json`;
 // 上报地址与令牌存在宿主的环境变量里，不再落成文件。
-// 该存储是全局键值、不按包隔离（EnvPreferences），所以键名必须带包前缀。
+// 该存储是全局键值、不按包隔离（EnvPreferences）。服务端只有一个，
+// 所以本包与 xhs-collector 共用同一组中立键，键名不带来源前缀。
 // 设置入口是工具箱里的「抖音采集设置」页，读写分别走 UI 模块的 setEnv 与脚本的 getEnv。
-const ENV_BASE_URL = "DOUYIN_COLLECTOR_BASE_URL";
-const ENV_TOKEN = "DOUYIN_COLLECTOR_TOKEN";
+const ENV_BASE_URL = "COLLECTOR_BASE_URL";
+const ENV_TOKEN = "COLLECTOR_TOKEN";
+// 本包早期版本用的带来源前缀的键名。一次性迁移见 migrateLegacyUploadConfig，
+// 迁移跑完旧键即被清空，下个发布周期连同迁移一起删。
+const LEGACY_ENV_BASE_URL = "DOUYIN_COLLECTOR_BASE_URL";
+const LEGACY_ENV_TOKEN = "DOUYIN_COLLECTOR_TOKEN";
 const UPLOAD_PATH = "/api/v1/records";
 // 批量条数取自上报契约
 const UPLOAD_BATCH_SIZE = 20;
@@ -572,14 +757,6 @@ function randomId() {
 function nowIso() {
     // toISOString 带 Z，属于 ISO8601 的时区表示
     return new Date().toISOString();
-}
-/** 分享链接归一化后的视频标识，用于本地去重。 */
-function videoIdOf(url) {
-    const matched = url.match(/v\.douyin\.com\/([A-Za-z0-9_-]+)/);
-    if (!matched) {
-        throw new Error(`分享链接不符合预期，取不出视频标识：${url}`);
-    }
-    return matched[1];
 }
 /** 从分享口令里取作者与标题。取不到就是空字符串，契约允许这两个字段为空。 */
 function parseShareMeta(shareText) {
@@ -650,10 +827,39 @@ function markOutbox(outbox, key, status, error) {
     entry.last_error = error;
     entry.updated_at = nowIso();
 }
-/** 把一条采集结果落进 records.jsonl，并给它建一条 pending 的 outbox 记录。返回是否新增。 */
+/** 把一条新采集的视频追加到 records.jsonl，并给它建一条 pending 的 outbox 记录。 */
 async function appendRecord(outbox, record) {
-    await Tools.Files.write(RECORDS_FILE, `${JSON.stringify(record)}\n`, true, "android");
+    const appended = await Tools.Files.write(RECORDS_FILE, `${JSON.stringify(record)}\n`, true, "android");
+    // 写失败必须炸出来：静默放过的话这条记录只活在 outbox 的键里，
+    // 下一轮 flush 从文件里读不到它，等到数据对不上才发现。
+    if (!appended.successful) {
+        throw new Error(`追加采集记录失败：${appended.details || "(没有细节)"}`);
+    }
     markOutbox(outbox, record.idempotency_key, "pending", "");
+}
+/**
+ * 用整份记录重写 records.jsonl（原地更新一个视频的计数时用）。
+ *
+ * 为什么写临时文件再 move 而不是直接覆盖：脚本随时可能被 30 分钟硬超时杀掉，
+ * 直接覆盖会留下半截文件，而 loadRecords 遇到坏行是直接抛错的，整个采集会瘫掉。
+ * 宿主的 move 在 Android 上走 File.renameTo，同目录下是原子替换。
+ *
+ * 为什么每次更新都重写整个文件、而不是攒到本片结束时写一次：
+ * 更新后的那一行随时可能因为脚本被杀而丢失，攒到最后等于把「这一片采到的计数」
+ * 押在收尾能不能跑到。文件是一个视频一行，量级是几百行，重写几次的代价可以忽略。
+ */
+async function saveRecords(records) {
+    const content = records.map((record) => `${JSON.stringify(record)}\n`).join("");
+    const tempFile = `${RECORDS_FILE}.rewrite`;
+    const written = await Tools.Files.write(tempFile, content, false, "android");
+    if (!written.successful) {
+        throw new Error(`写临时记录文件失败：${written.details || "(没有细节)"}`);
+    }
+    const moved = await Tools.Files.move(tempFile, RECORDS_FILE, "android");
+    // move 失败时目标文件还是旧内容（不是半截），但这次更新会丢，必须如实报错而不是继续
+    if (!moved.successful) {
+        throw new Error(`替换采集记录文件失败：${moved.details || "(没有细节)"}`);
+    }
 }
 async function loadProgress() {
     const content = await readTextFile(PROGRESS_FILE);
@@ -673,7 +879,7 @@ async function saveProgress(progress) {
 async function startProgress(keyword) {
     const previous = await loadProgress();
     if (previous && previous.keyword === keyword) {
-        console.log(`续上一轮：关键词=${keyword} 第 ${previous.chunk_index} 片已完成，累计 ${previous.collected_total} 条`);
+        console.log(`续上一轮：关键词=${keyword} 第 ${previous.chunk_index} 片已完成，累计新增 ${previous.collected_total} 条`);
         return previous;
     }
     return {
@@ -690,12 +896,56 @@ async function startProgress(keyword) {
     };
 }
 /**
+ * 一次性迁移：把带来源前缀的旧键搬到中立键上，然后清掉旧键。
+ *
+ * 上报地址与令牌改成了不带来源前缀的中立键，两个采集包共用同一组键。
+ * 迁移放在读配置这条路径上，是因为无人值守的定时任务不经过设置页：
+ * 升级后如果没人打开过设置页，旧键还在而新键为空，上报会一直报「未配置」。
+ * 迁移跑完旧键即被清掉，之后每次读配置都是空操作。
+ * 新键已经有值时以新键为准，不会被旧值覆盖回去。
+ *
+ * 下一个发布周期连同这个函数与设置页里那次工具调用一起删。
+ */
+async function migrateLegacyUploadConfig() {
+    for (const [legacy, current] of [
+        [LEGACY_ENV_BASE_URL, ENV_BASE_URL],
+        [LEGACY_ENV_TOKEN, ENV_TOKEN],
+    ]) {
+        const legacyValue = (getEnv(legacy) ?? "").trim();
+        if (legacyValue.length === 0) {
+            continue;
+        }
+        if ((getEnv(current) ?? "").trim().length === 0) {
+            await Tools.SoftwareSettings.writeEnvironmentVariable(current, legacyValue);
+        }
+        // 空值即清空：宿主在 value 为空时走的是 EnvPreferences.removeEnv
+        await Tools.SoftwareSettings.writeEnvironmentVariable(legacy, "");
+    }
+}
+/**
+ * 迁移工具：设置页加载时调它。
+ *
+ * 脚本与 UI 模块是两个运行上下文（QuickJS 与 compose_dsl），不共享代码，
+ * 所以设置页通过这个工具触发同一次迁移，页面上就能直接看到搬过来的值。
+ */
+async function douyin_migrate_upload_config() {
+    await migrateLegacyUploadConfig();
+    return {
+        success: true,
+        baseUrlConfigured: (getEnv(ENV_BASE_URL) ?? "").trim().length > 0,
+        tokenConfigured: (getEnv(ENV_TOKEN) ?? "").trim().length > 0,
+    };
+}
+/**
  * 读上报配置。
  *
  * 配置在宿主的环境变量里，设置入口是工具箱里的「抖音采集设置」页。
  * 这里不做任何兜底：键缺失就报错，并把该去哪填写说清楚，绝不拿空地址去发请求。
+ *
+ * 读之前先跑一次旧键迁移，保证无人值守路径也不会读到空的配置。
  */
-function readUploadConfig() {
+async function readUploadConfig() {
+    await migrateLegacyUploadConfig();
     const baseUrl = (getEnv(ENV_BASE_URL) ?? "").trim();
     const token = (getEnv(ENV_TOKEN) ?? "").trim();
     if (!baseUrl || !token) {
@@ -850,7 +1100,7 @@ function countRecordsByStatus(records, outbox) {
 }
 /** 把 outbox 里所有 pending 记录按批量发出去。failed 不自动重发。 */
 async function douyin_outbox_flush() {
-    const config = readUploadConfig();
+    const config = await readUploadConfig();
     const client = await readClientInfo();
     const records = await loadRecords();
     const outbox = await loadOutbox();
@@ -939,7 +1189,7 @@ async function douyin_outbox_status() {
  * unexpected_status，并把服务端原文一并带出来，交给界面显示。
  */
 async function douyin_upload_config_check() {
-    const config = readUploadConfig();
+    const config = await readUploadConfig();
     const body = JSON.stringify({
         batch_id: randomId(),
         client: await readClientInfo(),
@@ -1026,7 +1276,7 @@ async function douyin_collect_share_links(params) {
     progress.last_chunk_started_at = nowIso();
     progress.last_stop_reason = "";
     await saveProgress(progress);
-    console.log(`本轮第 ${progress.chunk_index} 片开始，本片目标 ${count} 条，时间上限 ${chunkMinutes} 分钟`);
+    console.log(`本轮第 ${progress.chunk_index} 片开始，本片目标 ${count} 条（新增 + 更新），时间上限 ${chunkMinutes} 分钟`);
     await ensureDouyinForeground();
     await Tools.System.intent({
         type: "activity",
@@ -1046,33 +1296,47 @@ async function douyin_collect_share_links(params) {
     // 返回列表下滑一屏取下一页。为什么不一路滑到底：详情页的滑动在搜索结果用尽后会接到
     // 推荐流，实测把连续 20 条瑞幸广告当成关键词结果收了下来，页内滑动能把范围钉在列表里。
     const outbox = await loadOutbox();
-    const storedRecords = await loadRecords();
-    // 本地去重按分享链接归一化后的视频标识，跨轮次生效
-    const storedVideoIds = Object.create(null);
-    for (const record of storedRecords) {
-        storedVideoIds[videoIdOf(record.url)] = true;
+    const records = await loadRecords();
+    // content_id -> records 里的下标。用来判断这次遇到的视频是新增还是「库里已有、要更新那一行」。
+    // 跨轮次生效：records.jsonl 就是一个视频一行。
+    // 0.3.0 之前写下的记录没有 content_id，这里直接跳过它们：拿不到真实身份就没法认视频，
+    // 硬猜（作者+标题）会把不同视频并成一条。
+    const recordIndexByAwemeId = Object.create(null);
+    for (let index = 0; index < records.length; index += 1) {
+        const contentId = records[index].content_id;
+        if (contentId) {
+            recordIndexByAwemeId[contentId] = index;
+        }
     }
     const readVisibleCards = async () => {
         const root = UINode.fromPageInfo(await Tools.UI.getPageInfo());
         return findVisibleVideoCards(root, screenHeight);
     };
     const collected = [];
+    // 本片内已经处理过的视频。库里已有的视频不再跳过（那是更新），
+    // 只有「本片内已经处理过一次」才跳过，避免在翻页重叠时对同一个视频重复取链。
+    const processedInChunk = Object.create(null);
+    // 上一次取到的视频身份。详情页内滑动没生效时取到的是同一个视频，靠它认出来。
+    // 不能用分享链接比：同一个视频每次分享的短码都不一样。
+    let lastProcessedAwemeId = "";
+    let updated = 0;
     let skippedDuplicates = 0;
     let consecutiveSkips = 0;
     let stopReason = "count";
     let pageIndex = 0;
-    while (collected.length < count) {
+    // 新增与更新都走一次完整的取链（真实身份只能从分享链接跳转后的页面里取），成本一样，共用一个预算
+    while (collected.length + updated < count) {
         // 时间上限先到就收尾，避免贴近 30 分钟硬超时被杀，那时没有任何保存机会
         if (Date.now() - chunkStartedAt >= chunkBudgetMs) {
             stopReason = "time";
-            console.log(`本片时间上限 ${chunkMinutes} 分钟到，结束本片，本片已采 ${collected.length} 条`);
+            console.log(`本片时间上限 ${chunkMinutes} 分钟到，结束本片，本片已新增 ${collected.length} 条、更新 ${updated} 条`);
             break;
         }
         if (consecutiveSkips >= MAX_CONSECUTIVE_SKIPS) {
-            // 分页驱动下重复是"走过已采过的位置"，不是异常。停掉本片而不是抛错：
+            // 分页驱动下重复是"走过已处理过的位置"，不是异常。停掉本片而不是抛错：
             // 抛错会让工作流节点记一次失败，而这里其实什么都没坏，只是这一段没有新内容。
             stopReason = "duplicates";
-            console.log(`连续 ${consecutiveSkips} 个视频都已经采集过，本片不再继续往下走。已新增 ${collected.length}/${count} 条`);
+            console.log(`连续 ${consecutiveSkips} 个视频本片内已经处理过，本片不再继续往下走。已新增 ${collected.length} 条、更新 ${updated} 条`);
             break;
         }
         // 一次读取同时拿到"这一页有哪几张卡"和"第一张是哪个"，避免读两次之间页面变化
@@ -1086,7 +1350,7 @@ async function douyin_collect_share_links(params) {
             return cards[0];
         }, "搜索结果卡片");
         pageIndex += 1;
-        const pageSize = Math.min(pageCards.length, count - collected.length);
+        const pageSize = Math.min(pageCards.length, count - collected.length - updated);
         console.log(`第 ${pageIndex} 页：本页可见 ${pageCards.length} 张卡片，本片这一页取 ${pageSize} 条`);
         await tapNode(pageCards[0], "视频卡片的时长角标");
         await waitForDetailShareButton(screenHeight);
@@ -1095,70 +1359,110 @@ async function douyin_collect_share_links(params) {
         for (let slot = 0; slot < pageSize; slot += 1) {
             if (Date.now() - chunkStartedAt >= chunkBudgetMs) {
                 stopReason = "time";
-                console.log(`本片时间上限 ${chunkMinutes} 分钟到，结束本片，本片已采 ${collected.length} 条`);
+                console.log(`本片时间上限 ${chunkMinutes} 分钟到，结束本片，本片已新增 ${collected.length} 条、更新 ${updated} 条`);
                 break;
             }
-            const { url, shareText, shareDesc: currentShareDesc, promoHint } = await extractShareLinkOnDetailPage(screenHeight);
+            const { url, shareText, shareDesc: currentShareDesc, promoHint, counts, contentId } = await extractShareLinkOnDetailPage(screenHeight);
             shareDesc = currentShareDesc;
-            if (collected.indexOf(url) >= 0) {
+            if (lastProcessedAwemeId !== "" && contentId === lastProcessedAwemeId) {
                 // 取到的是同一个视频，说明上一条结束时没有真的切走，先切走再重试
-                console.log(`本页第 ${slot + 1} 条取到重复链接，先切换到下一个视频`);
+                console.log(`本页第 ${slot + 1} 条取到同一个视频（content_id=${contentId}），先切换到下一个视频`);
                 shareDesc = await swipeToNextVideo(shareDesc, screenHeight);
                 continue;
             }
-            if (storedVideoIds[videoIdOf(url)]) {
+            if (processedInChunk[contentId]) {
+                // 翻页重叠会让同一个视频再次出现，本片内不再重复取链
                 skippedDuplicates += 1;
                 consecutiveSkips += 1;
-                console.log(`本页第 ${slot + 1} 条命中已采集过的视频，跳过：${url}`);
+                console.log(`本页第 ${slot + 1} 条本片内已经处理过，跳过：${url}（content_id=${contentId}）`);
                 if (slot + 1 < pageSize) {
                     shareDesc = await swipeToNextVideo(shareDesc, screenHeight);
                 }
                 continue;
             }
-            const meta = parseShareMeta(shareText);
-            const record = {
-                idempotency_key: randomId(),
-                keyword,
-                url,
-                share_text: shareText,
-                title: meta.title,
-                author: meta.author,
-                collected_at: nowIso(),
-                source: RECORD_SOURCE,
-                keyword_in_title: meta.title.includes(keyword),
-                promo_hint: promoHint,
-            };
-            // 每条立即落盘并建 pending 的 outbox 记录，中途被杀也不会丢
-            await appendRecord(outbox, record);
-            await saveOutbox(outbox);
-            storedVideoIds[videoIdOf(url)] = true;
+            const countsAt = nowIso();
+            const existingIndex = recordIndexByAwemeId[contentId];
+            if (existingIndex === undefined) {
+                const meta = parseShareMeta(shareText);
+                const record = {
+                    idempotency_key: randomId(),
+                    keyword,
+                    url,
+                    share_text: shareText,
+                    title: meta.title,
+                    author: meta.author,
+                    collected_at: countsAt,
+                    source: RECORD_SOURCE,
+                    content_id: contentId,
+                    keyword_in_title: meta.title.includes(keyword),
+                    promo_hint: promoHint,
+                    like_count: counts.like,
+                    comment_count: counts.comment,
+                    collect_count: counts.collect,
+                    interaction_text: counts.text,
+                    counts_at: countsAt,
+                };
+                // 每条立即落盘并建 pending 的 outbox 记录，中途被杀也不会丢
+                await appendRecord(outbox, record);
+                await saveOutbox(outbox);
+                recordIndexByAwemeId[contentId] = records.length;
+                records.push(record);
+                collected.push(url);
+                progress.collected_total += 1;
+                console.log(`已采集第 ${collected.length} 条：${url}（content_id=${contentId}，赞 ${counts.like ?? "无"}、评 ${counts.comment ?? "无"}、藏 ${counts.collect ?? "无"}）`);
+            }
+            else {
+                // 库里有这个视频：就地更新那一行的三个计数。
+                //
+                // collected_at 保持不变（那是首次采集时间），只换 counts_at；
+                // idempotency_key 必须换新：服务端按 (device, idempotency_key) 去重，
+                // 沿用旧键会被判成「已入库」而完全不更新，换键之后才走「同一视频的新观测」。
+                // url 换成这一次的短链（同一个视频每次分享的短码都不同，留着最新的那个）。
+                const target = records[existingIndex];
+                const previousKey = target.idempotency_key;
+                target.url = url;
+                target.share_text = shareText;
+                target.like_count = counts.like;
+                target.comment_count = counts.comment;
+                target.collect_count = counts.collect;
+                target.interaction_text = counts.text;
+                target.counts_at = countsAt;
+                target.idempotency_key = randomId();
+                // 上一轮观测的 outbox 条目随这一行被覆盖而作废，一并清掉，别让它长成孤儿
+                delete outbox.entries[previousKey];
+                await saveRecords(records);
+                markOutbox(outbox, target.idempotency_key, "pending", "");
+                await saveOutbox(outbox);
+                updated += 1;
+                console.log(`已更新第 ${updated} 条：${url}（content_id=${contentId}，赞 ${counts.like ?? "无"}、评 ${counts.comment ?? "无"}、藏 ${counts.collect ?? "无"}）`);
+            }
+            processedInChunk[contentId] = true;
+            lastProcessedAwemeId = contentId;
             consecutiveSkips = 0;
-            collected.push(url);
-            progress.collected_total += 1;
             progress.last_url = url;
-            progress.last_video_id = videoIdOf(url);
+            progress.last_video_id = contentId;
             await saveProgress(progress);
-            console.log(`已采集第 ${collected.length} 条：${url}`);
             // 让界面能看到分片进展，长任务不至于看起来像卡住
             sendIntermediateResult({
                 keyword,
                 chunkIndex: progress.chunk_index,
                 collectedInChunk: collected.length,
+                updatedInChunk: updated,
                 chunkTarget: count,
                 collectedTotal: progress.collected_total,
                 url,
             });
-            if (slot + 1 < pageSize && collected.length < count) {
+            if (slot + 1 < pageSize && collected.length + updated < count) {
                 shareDesc = await swipeToNextVideo(shareDesc, screenHeight);
             }
         }
-        if (collected.length >= count || stopReason === "time") {
+        if (collected.length + updated >= count || stopReason === "time") {
             break;
         }
         // 回列表取下一页。返回后列表位置会保持（实测角标坐标一致），所以直接下滑一屏；
         // 下滑之后卡片没有换，说明结果已经翻到底，这一片到此为止。
         const beforeBounds = pageCards.map((card) => card.bounds ?? "").join("|");
-        await Tools.System.shell(`input keyevent ${KEYCODE_BACK}`);
+        await Tools.UI.pressKey(BACK_KEY_CODE);
         await Tools.System.sleep(VIDEO_SWITCH_SETTLE_MS);
         await Tools.UI.swipe(540, screenHeight - 400, 540, 700, SWIPE_DURATION_MS);
         await Tools.System.sleep(VIDEO_SWITCH_SETTLE_MS);
@@ -1177,6 +1481,7 @@ async function douyin_collect_share_links(params) {
         keyword,
         requested: count,
         collected,
+        updated,
         skippedDuplicates,
         stopReason,
         chunkIndex: progress.chunk_index,
@@ -1185,7 +1490,7 @@ async function douyin_collect_share_links(params) {
         outboxFile: OUTBOX_FILE,
         progressFile: PROGRESS_FILE,
     };
-    console.log(`本片结束（${stopReason === "time" ? "时间到" : "达到条数目标"}）：新增 ${collected.length} 条，本轮累计 ${progress.collected_total} 条`);
+    console.log(`本片结束（${stopReason === "time" ? "时间到" : "达到条数目标"}）：新增 ${collected.length} 条、更新 ${updated} 条，本轮累计新增 ${progress.collected_total} 条`);
     return payload;
 }
 exports.douyin_collect_share_link = douyin_collect_share_link;
@@ -1193,3 +1498,4 @@ exports.douyin_collect_share_links = douyin_collect_share_links;
 exports.douyin_outbox_flush = douyin_outbox_flush;
 exports.douyin_outbox_status = douyin_outbox_status;
 exports.douyin_upload_config_check = douyin_upload_config_check;
+exports.douyin_migrate_upload_config = douyin_migrate_upload_config;

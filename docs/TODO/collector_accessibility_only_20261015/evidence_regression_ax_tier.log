@@ -1,0 +1,31 @@
+2026-10-15 18:26:38.573 D/WorkflowScheduler: Armed continuous round: workflow=a0a1b2c3-0000-4000-8000-000000000002 trigger=trigger_ax_regress slot=0 delay=0ms
+2026-10-15 18:26:39.117 D/WorkflowScheduler: Continuous chain already armed for workflow: a0a1b2c3-0000-4000-8000-000000000002
+2026-10-15 18:26:39.118 D/WorkflowSchedulerInit: Scheduled workflow: 抖音采集回归（无障碍档，不依赖 Shizuku） (a0a1b2c3-0000-4000-8000-000000000002)
+2026-10-15 18:26:41.892 D/WorkflowWorker: Executing scheduled workflow: a0a1b2c3-0000-4000-8000-000000000002, trigger: trigger_ax_regress
+2026-10-15 18:26:41.925 D/WorkflowRepository: Triggering workflow: 抖音采集回归（无障碍档，不依赖 Shizuku） (a0a1b2c3-0000-4000-8000-000000000002)
+2026-10-15 18:26:42.001 D/WorkflowRepository: Workflow execution status updated: a0a1b2c3-0000-4000-8000-000000000002 -> RUNNING
+2026-10-15 18:26:42.010 D/WorkflowExecutor: 开始执行工作流: 抖音采集回归（无障碍档，不依赖 Shizuku） (a0a1b2c3-0000-4000-8000-000000000002) [runId=a9c65da8-de3a-42fa-97f4-beeeaa7f086d]
+2026-10-15 18:26:46.410 D/WorkflowExecutor: 执行节点: 采一条分享链接 (execute_ax_regress)
+2026-10-15 18:26:46.412 D/WorkflowRepository: Node execute_ax_regress state: com.ai.assistance.operit.core.workflow.NodeExecutionState$Running@29a23fd
+2026-10-15 18:26:46.851 I/ToolPkg: [douyin_collector] 续上一轮：关键词=美食 第 20 片已完成，累计 104 条
+2026-10-15 18:26:46.868 I/ToolPkg: [douyin_collector] 本轮第 21 片开始，本片目标 1 条，时间上限 3 分钟
+2026-10-15 18:26:48.557 I/ToolPkg: [douyin_collector] 读前台应用失败第 1 次，继续等待抖音就绪：Failed to retrieve UI data via accessibility service.
+2026-10-15 18:27:00.208 I/ToolPkg: [douyin_collector] 点击「「视频」标签」坐标=(283,289) class=Button desc= text=视频 bounds=[241,258][325,320]
+2026-10-15 18:27:07.642 I/ToolPkg: [douyin_collector] 第 1 页：本页可见 4 张卡片，本片这一页取 1 条
+2026-10-15 18:27:07.647 I/ToolPkg: [douyin_collector] 点击「视频卡片的时长角标」坐标=(466,1019) class=TextView desc= text=00:19 bounds=[421,997][511,1042]
+2026-10-15 18:27:14.074 I/ToolPkg: [douyin_collector] 点击「分享按钮」坐标=(995,1756) class=LinearLayout desc=分享1767，按钮 text= bounds=[911,1663][1080,1850]
+2026-10-15 18:27:15.632 I/ToolPkg: [douyin_collector] 点击「分享链接」坐标=(1030,2162) class=TextView desc= text=分享链接 bounds=[980,2140][1080,2184]
+2026-10-15 18:27:18.654 I/ToolPkg: [douyin_collector] 点击「输入框」坐标=(385,2199) class=EditText desc= text=分享你此刻的想法 bounds=[79,2166][692,2233]
+2026-10-15 18:27:27.588 I/ToolPkg: [douyin_collector] 已采集第 1 条：https://v.douyin.com/S0t_f1j-ABY/
+2026-10-15 18:27:27.606 I/ToolPkg: [douyin_collector] 本片结束（达到条数目标）：新增 1 条，本轮累计 105 条
+2026-10-15 18:27:27.626 D/WorkflowRepository: Node execute_ax_regress state: Success(result={"success":true,"keyword":"美食","requested":1,"collected":["https://v.douyin.com/S0t_f1j-ABY/"],"skippedDuplicates":0,"stopReason":"count","chunkIndex":21,"collectedTotal":105,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.douyin_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.douyin_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.douyin_collector_bundle/progress.json"})
+2026-10-15 18:27:27.718 D/WorkflowRepository: Workflow execution statistics updated: a0a1b2c3-0000-4000-8000-000000000002 (total: 1, success: 1)
+2026-10-15 18:27:27.735 D/WorkflowScheduler: Armed continuous round: workflow=a0a1b2c3-0000-4000-8000-000000000002 trigger=trigger_ax_regress slot=1 delay=59957ms
+2026-10-15 18:28:27.718 D/WorkflowWorker: Executing scheduled workflow: a0a1b2c3-0000-4000-8000-000000000002, trigger: trigger_ax_regress
+2026-10-15 18:28:27.735 D/WorkflowRepository: Triggering workflow: 抖音采集回归（无障碍档，不依赖 Shizuku） (a0a1b2c3-0000-4000-8000-000000000002)
+2026-10-15 18:28:27.801 D/WorkflowRepository: Workflow execution status updated: a0a1b2c3-0000-4000-8000-000000000002 -> RUNNING
+2026-10-15 18:28:27.804 D/WorkflowExecutor: 开始执行工作流: 抖音采集回归（无障碍档，不依赖 Shizuku） (a0a1b2c3-0000-4000-8000-000000000002) [runId=7e0346a9-106e-4337-a90b-89327de52154]
+2026-10-15 18:28:27.813 D/WorkflowExecutor: 执行节点: 采一条分享链接 (execute_ax_regress)
+2026-10-15 18:28:27.814 D/WorkflowRepository: Node execute_ax_regress state: com.ai.assistance.operit.core.workflow.NodeExecutionState$Running@29a23fd
+2026-10-15 18:28:28.124 I/ToolPkg: [douyin_collector] 续上一轮：关键词=美食 第 21 片已完成，累计 105 条
+2026-10-15 18:28:28.145 I/ToolPkg: [douyin_collector] 本轮第 22 片开始，本片目标 1 条，时间上限 3 分钟

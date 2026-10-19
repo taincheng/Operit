@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "toolpkg_id": "com.taincheng.douyin_collector_bundle",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "api_version": "1.0.0",
   "main": "dist/main.js",
   "display_name": {
@@ -9,8 +9,8 @@
     "en": "Douyin Collector"
   },
   "description": {
-    "zh": "按关键词采集抖音搜索结果的分享链接，落盘到 records.jsonl 后批量上报到服务端。支持分片与断点续跑，附带一个定时采集与上报的工作流模板。",
-    "en": "Collect Douyin share links for a keyword, append them to records.jsonl and upload them to your server. Supports chunked resumable runs and ships a scheduled collect-and-upload workflow template."
+    "zh": "按关键词采集抖音搜索结果的分享链接与点赞/评论/收藏计数，落盘到 records.jsonl 后批量上报到服务端。再次采到同一个视频时会就地更新那一行的三个计数。支持分片与断点续跑，附带一个连续采集与上报的工作流模板。",
+    "en": "Collect Douyin share links plus like/comment/collect counts for a keyword, append them to records.jsonl and upload them to your server. Re-collecting a video updates that video's three counts in place. Supports chunked resumable runs and ships a continuous collect-and-upload workflow template."
   },
   "enabled_by_default": true,
   "subpackages": [
@@ -30,12 +30,12 @@
     {
       "id": "douyin_scheduled_collect_and_upload",
       "display_name": {
-        "zh": "定时采集抖音并上报",
-        "en": "Scheduled Douyin Collect and Upload"
+        "zh": "连续采集抖音并上报",
+        "en": "Continuous Douyin Collect and Upload"
       },
       "description": {
-        "zh": "每 15 分钟采一片搜索结果的分享链接，再把这批上报到服务端。导入后可以改关键词、条数与间隔。",
-        "en": "Every 15 minutes, collect one chunk of share links and upload them to your server. Edit the keyword, item count and interval after importing."
+        "zh": "一轮采一片搜索结果的分享链接并上报，整轮结束后随机等 30–120 秒接着跑下一轮。导入后可以改关键词、条数与间隔。",
+        "en": "Each round collects one chunk of share links and uploads it, then waits a random 30–120 seconds before the next round. Edit the keyword, item count and gap after importing."
       },
       "resource_key": "douyin_workflow_collect_and_upload"
     }

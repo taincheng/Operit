@@ -1,0 +1,367 @@
+{
+    "success": true,
+    "scriptPath": "/sdcard/Android/data/com.ai.assistance.operit.debug/js_temp/probe_ax_only.js",
+    "functionName": "interactionCountsProbe",
+    "params": {},
+    "startedAtMs": 1792381364274,
+    "finishedAtMs": 1792381379572,
+    "durationMs": 15298,
+    "result": {
+        "ok": true,
+        "swipes": 0,
+        "sampleCount": 1,
+        "samples": [
+            {
+                "index": 0,
+                "shareDesc": "分享14.3万，按钮",
+                "matched": [
+                    {
+                        "className": "LinearLayout",
+                        "text": "",
+                        "contentDesc": "未点赞，喜欢1.0万，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/gln",
+                        "bounds": "[911,0][1080,-725]",
+                        "clickable": true
+                    },
+                    {
+                        "className": "LinearLayout",
+                        "text": "",
+                        "contentDesc": "评论507，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/euu",
+                        "bounds": "[911,0][1080,-538]",
+                        "clickable": true
+                    },
+                    {
+                        "className": "ImageView",
+                        "text": "",
+                        "contentDesc": "评论507，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/eo6",
+                        "bounds": "[945,0][1046,-602]",
+                        "clickable": false
+                    },
+                    {
+                        "className": "LinearLayout",
+                        "text": "",
+                        "contentDesc": "未选中，收藏7529，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/d-c",
+                        "bounds": "[909,0][1080,-353]",
+                        "clickable": true
+                    },
+                    {
+                        "className": "LinearLayout",
+                        "text": "",
+                        "contentDesc": "未点赞，喜欢41.4万，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/gln",
+                        "bounds": "[911,1077][1080,1273]",
+                        "clickable": true
+                    },
+                    {
+                        "className": "LinearLayout",
+                        "text": "",
+                        "contentDesc": "评论7353，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/euu",
+                        "bounds": "[911,1273][1080,1460]",
+                        "clickable": true
+                    },
+                    {
+                        "className": "ImageView",
+                        "text": "",
+                        "contentDesc": "评论7353，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/eo6",
+                        "bounds": "[945,1295][1046,1396]",
+                        "clickable": false
+                    },
+                    {
+                        "className": "LinearLayout",
+                        "text": "",
+                        "contentDesc": "未选中，收藏7.1万，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/d-c",
+                        "bounds": "[908,1460][1080,1654]",
+                        "clickable": true
+                    },
+                    {
+                        "className": "LinearLayout",
+                        "text": "",
+                        "contentDesc": "未点赞，喜欢5369，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/gln",
+                        "bounds": "[911,3233][1080,2129]",
+                        "clickable": true
+                    },
+                    {
+                        "className": "LinearLayout",
+                        "text": "",
+                        "contentDesc": "评论316，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/euu",
+                        "bounds": "[911,3420][1080,2129]",
+                        "clickable": true
+                    },
+                    {
+                        "className": "ImageView",
+                        "text": "",
+                        "contentDesc": "评论316，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/eo6",
+                        "bounds": "[945,3442][1046,2129]",
+                        "clickable": false
+                    },
+                    {
+                        "className": "LinearLayout",
+                        "text": "",
+                        "contentDesc": "未选中，收藏2373，按钮",
+                        "resourceId": "com.ss.android.ugc.aweme:id/d-c",
+                        "bounds": "[909,3607][1080,2129]",
+                        "clickable": true
+                    }
+                ],
+                "contentDescs": [
+                    "关注",
+                    "Rico羽轩",
+                    "未点赞，喜欢1.0万，按钮",
+                    "评论507，按钮",
+                    "评论507，按钮",
+                    "未选中，收藏7529，按钮",
+                    "分享2336，按钮",
+                    "音乐，@Rico羽轩创作的原声，按钮",
+                    "发弹幕，按钮",
+                    "共112人推荐按钮",
+                    "发布时间：02月03日",
+                    "章节要点",
+                    "章节要点",
+                    "关注",
+                    "Rico羽轩",
+                    "未点赞，喜欢41.4万，按钮",
+                    "评论7353，按钮",
+                    "评论7353，按钮",
+                    "未选中，收藏7.1万，按钮",
+                    "分享14.3万，按钮",
+                    "音乐，@Rico羽轩创作的原声，按钮",
+                    "发弹幕，按钮",
+                    "共7833人推荐按钮",
+                    "发布时间：06月30日",
+                    "汽水音乐按钮",
+                    "音乐，Psycho，按钮",
+                    "点击查看更多，按钮",
+                    "暂停视频，按钮",
+                    "关注",
+                    "李小冷不冷",
+                    "未点赞，喜欢5369，按钮",
+                    "评论316，按钮",
+                    "评论316，按钮",
+                    "未选中，收藏2373，按钮",
+                    "分享1881，按钮",
+                    "听抖音",
+                    "发弹幕，按钮",
+                    "发布时间：05月13日",
+                    "点击查看更多，按钮",
+                    "播放视频，按钮",
+                    "插入图片",
+                    "at",
+                    "表情",
+                    "返回",
+                    "进度条"
+                ],
+                "texts": [
+                    "1.0万",
+                    "507",
+                    "7529",
+                    "2336",
+                    "共112人推荐",
+                    "深圳市",
+                    "拒绝过度装修！8个避坑点直接抄别乱搞！ #装修避坑 #装修干货 #装修日记... 展开",
+                    "@Rico羽轩",
+                    " · 02月03日",
+                    "章节要点",
+                    "41.4万",
+                    "7353",
+                    "7.1万",
+                    "14.3万",
+                    "拍同款",
+                    "共7833人推荐",
+                    "深圳市",
+                    "拒绝父母参与装修！独自翻新原木风小家，朋友都说审美降维打击！ #... 展开",
+                    "@Rico羽轩",
+                    " · 06月30日",
+                    "相关搜索",
+                    "二手房装修翻新",
+                    "5369",
+                    "316",
+                    "2373",
+                    "1881",
+                    "听抖音",
+                    "抖音精选内容",
+                    "购物",
+                    "|",
+                    "装修第一次先搞懂认知",
+                    "第 296 集 | 最强小户型逆袭，必学！ 你敢信这是85㎡的家？ 46㎡公区+11... 展开",
+                    "@李小冷不冷",
+                    " · 05月13日",
+                    "合集",
+                    "超想逛你家！",
+                    "发条评论，和大家一起讨论",
+                    "装修风格",
+                    "搜索"
+                ],
+                "interaction": {
+                    "like": [
+                        {
+                            "className": "LinearLayout",
+                            "text": "",
+                            "contentDesc": "未点赞，喜欢1.0万，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/gln",
+                            "bounds": "[911,0][1080,-725]",
+                            "clickable": true
+                        },
+                        {
+                            "className": "LinearLayout",
+                            "text": "",
+                            "contentDesc": "未点赞，喜欢41.4万，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/gln",
+                            "bounds": "[911,1077][1080,1273]",
+                            "clickable": true
+                        },
+                        {
+                            "className": "LinearLayout",
+                            "text": "",
+                            "contentDesc": "未点赞，喜欢5369，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/gln",
+                            "bounds": "[911,3233][1080,2129]",
+                            "clickable": true
+                        }
+                    ],
+                    "comment": [
+                        {
+                            "className": "LinearLayout",
+                            "text": "",
+                            "contentDesc": "评论507，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/euu",
+                            "bounds": "[911,0][1080,-538]",
+                            "clickable": true
+                        },
+                        {
+                            "className": "ImageView",
+                            "text": "",
+                            "contentDesc": "评论507，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/eo6",
+                            "bounds": "[945,0][1046,-602]",
+                            "clickable": false
+                        },
+                        {
+                            "className": "LinearLayout",
+                            "text": "",
+                            "contentDesc": "评论7353，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/euu",
+                            "bounds": "[911,1273][1080,1460]",
+                            "clickable": true
+                        },
+                        {
+                            "className": "ImageView",
+                            "text": "",
+                            "contentDesc": "评论7353，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/eo6",
+                            "bounds": "[945,1295][1046,1396]",
+                            "clickable": false
+                        },
+                        {
+                            "className": "LinearLayout",
+                            "text": "",
+                            "contentDesc": "评论316，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/euu",
+                            "bounds": "[911,3420][1080,2129]",
+                            "clickable": true
+                        },
+                        {
+                            "className": "ImageView",
+                            "text": "",
+                            "contentDesc": "评论316，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/eo6",
+                            "bounds": "[945,3442][1046,2129]",
+                            "clickable": false
+                        }
+                    ],
+                    "collect": [
+                        {
+                            "className": "LinearLayout",
+                            "text": "",
+                            "contentDesc": "未选中，收藏7529，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/d-c",
+                            "bounds": "[909,0][1080,-353]",
+                            "clickable": true
+                        },
+                        {
+                            "className": "LinearLayout",
+                            "text": "",
+                            "contentDesc": "未选中，收藏7.1万，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/d-c",
+                            "bounds": "[908,1460][1080,1654]",
+                            "clickable": true
+                        },
+                        {
+                            "className": "LinearLayout",
+                            "text": "",
+                            "contentDesc": "未选中，收藏2373，按钮",
+                            "resourceId": "com.ss.android.ugc.aweme:id/d-c",
+                            "bounds": "[909,3607][1080,2129]",
+                            "clickable": true
+                        }
+                    ]
+                }
+            }
+        ],
+        "trace": [
+            {
+                "step": "currentPage",
+                "page": {
+                    "packageName": "com.ss.android.ugc.aweme",
+                    "activityName": "com.ss.android.ugc.aweme.detail.ui.DetailActivity",
+                    "nodeCount": 1070,
+                    "texts": [
+                        "1.0万",
+                        "507",
+                        "7529",
+                        "2336",
+                        "共112人推荐",
+                        "深圳市",
+                        "拒绝过度装修！8个避坑点直接抄别乱搞！ #装修避坑 #装修干货 #装修日记... 展开",
+                        "@Rico羽轩",
+                        " · 02月03日",
+                        "章节要点",
+                        "41.4万",
+                        "7353",
+                        "7.1万",
+                        "14.3万",
+                        "拍同款",
+                        "共7833人推荐",
+                        "深圳市",
+                        "拒绝父母参与装修！独自翻新原木风小家，朋友都说审美降维打击！ #... 展开",
+                        "@Rico羽轩",
+                        " · 06月30日"
+                    ],
+                    "contentDescs": [
+                        "关注",
+                        "Rico羽轩",
+                        "未点赞，喜欢1.0万，按钮",
+                        "评论507，按钮",
+                        "评论507，按钮",
+                        "未选中，收藏7529，按钮",
+                        "分享2336，按钮",
+                        "音乐，@Rico羽轩创作的原声，按钮",
+                        "发弹幕，按钮",
+                        "共112人推荐按钮",
+                        "发布时间：02月03日",
+                        "章节要点",
+                        "章节要点",
+                        "关注",
+                        "Rico羽轩",
+                        "未点赞，喜欢41.4万，按钮",
+                        "评论7353，按钮",
+                        "评论7353，按钮",
+                        "未选中，收藏7.1万，按钮",
+                        "分享14.3万，按钮"
+                    ]
+                }
+            }
+        ]
+    },
+    "events": [
+        "completed: {\"ok\":true,\"swipes\":0,\"sampleCount\":1,\"samples\":[{\"index\":0,\"shareDesc\":\"分享14.3万，按钮\",\"matched\":[{\"className\":\"LinearLayout\",\"text\":\"\",\"contentDesc\":\"未点赞，喜欢1.0万，按钮\",\"resourceId\":\"com.ss.android.ugc.aweme:id/gln\",\"bounds\":\"[911,0][1080,-72..."
+    ]
+}

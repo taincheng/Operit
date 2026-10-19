@@ -1,0 +1,137 @@
+{
+    "success": true,
+    "scriptPath": "/sdcard/Android/data/com.ai.assistance.operit.debug/js_temp/probe_ax_only.js",
+    "functionName": "pasteByToolbarProbe",
+    "params": {},
+    "startedAtMs": 1792057052614,
+    "finishedAtMs": 1792057087367,
+    "durationMs": 34753,
+    "result": {
+        "ok": true,
+        "pastedText": "4.87 复制打开抖音，看看【梅酱紫吃什么的作品】在深圳坂田吃到了贵州铁板烧！！真的好好吃😭 # 美... https://v.douyin.com/ag2cnC_ZSkU/ 11/01 :2pm baA:/ j@c.At ",
+        "matchedUrl": "https://v.douyin.com/ag2cnC_ZSkU/",
+        "clearedText": "发条评论，说说你的感受",
+        "trace": [
+            {
+                "step": "detailPage",
+                "reused": false,
+                "page": {
+                    "packageName": "com.ss.android.ugc.aweme",
+                    "activityName": "com.ss.android.ugc.aweme.main.MainActivity",
+                    "nodeCount": 132,
+                    "texts": [
+                        "经验",
+                        "热点",
+                        "直播",
+                        "团购",
+                        "深圳",
+                        "关注",
+                        "商城",
+                        "推荐",
+                        "首页",
+                        "朋友",
+                        "消息",
+                        "我"
+                    ],
+                    "contentDescs": [
+                        "视频",
+                        "经验，按钮",
+                        "热点，按钮",
+                        "直播，按钮",
+                        "团购，按钮",
+                        "深圳，按钮",
+                        "关注，按钮",
+                        "商城，按钮",
+                        "已选中，推荐，按钮",
+                        "侧边栏",
+                        "搜索",
+                        "搜索",
+                        "首页，按钮",
+                        "朋友，按钮",
+                        "拍摄，按钮",
+                        "消息，按钮",
+                        "我，按钮"
+                    ]
+                }
+            },
+            {
+                "step": "resultCard",
+                "node": {
+                    "className": "View",
+                    "text": "",
+                    "contentDesc": "视频封面",
+                    "resourceId": "com.ss.android.ugc.aweme:id/qde",
+                    "bounds": "[56,744][723,1633]",
+                    "clickable": true
+                }
+            },
+            {
+                "step": "shareButton",
+                "node": {
+                    "className": "LinearLayout",
+                    "text": "",
+                    "contentDesc": "分享1763，按钮",
+                    "resourceId": "com.ss.android.ugc.aweme:id/zxd",
+                    "bounds": "[911,1663][1080,1850]",
+                    "clickable": true
+                }
+            },
+            {
+                "step": "copiedHint",
+                "ok": true
+            },
+            {
+                "step": "editTextInPanel",
+                "node": {
+                    "className": "EditText",
+                    "text": "发条评论，说说你的感受",
+                    "contentDesc": "",
+                    "resourceId": "com.ss.android.ugc.aweme:id/enc",
+                    "bounds": "[34,966][1040,1105]",
+                    "clickable": true
+                }
+            },
+            {
+                "step": "toolbarTap",
+                "target": {
+                    "x": 173,
+                    "y": 827
+                },
+                "editTextTopLeft": {
+                    "x": 34,
+                    "y": 966
+                }
+            },
+            {
+                "step": "toolbarTapResult",
+                "result": "[object Object]"
+            },
+            {
+                "step": "afterPaste",
+                "editText": {
+                    "className": "EditText",
+                    "text": "4.87 复制打开抖音，看看【梅酱紫吃什么的作品】在深圳坂田吃到了贵州铁板烧！！真的好好吃😭 # 美... https://v.douyin.com/ag2cnC_ZSkU/ 11/01 :2pm baA:/ j@c.At ",
+                    "contentDesc": "",
+                    "resourceId": "com.ss.android.ugc.aweme:id/enc",
+                    "bounds": "[34,764][1040,1026]",
+                    "clickable": true
+                }
+            },
+            {
+                "step": "afterClear",
+                "result": "[object Object]",
+                "editText": {
+                    "className": "EditText",
+                    "text": "发条评论，说说你的感受",
+                    "contentDesc": "",
+                    "resourceId": "com.ss.android.ugc.aweme:id/enc",
+                    "bounds": "[34,966][1040,1105]",
+                    "clickable": true
+                }
+            }
+        ]
+    },
+    "events": [
+        "completed: {\"ok\":true,\"pastedText\":\"4.87 复制打开抖音，看看【梅酱紫吃什么的作品】在深圳坂田吃到了贵州铁板烧！！真的好好吃😭 # 美... https://v.douyin.com/ag2cnC_ZSkU/ 11/01 :2pm baA:/ j@c.At \",\"matchedUrl\":\"https://v.douyin.com/ag2cnC_ZSkU/\",\"clearedText\":\"发条评论，说说你的感受\",\"trace\":[{\"step\":\"de..."
+    ]
+}

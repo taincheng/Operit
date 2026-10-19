@@ -1,0 +1,21 @@
+# 短链 → 真实视频 id 的取证（2026-10-19，本机 curl）
+
+抖音每次「分享链接」都会生成一个**新的** v.douyin.com 短码，但三个短码都 302 到同一个真实视频：
+
+  https://v.douyin.com/XWzooKgwlfw/  -> https://www.iesdouyin.com/share/video/7672977497508440818/?...
+  https://v.douyin.com/qm7Da46o_LI/  -> https://www.iesdouyin.com/share/video/7672977497508440818/?...
+  https://v.douyin.com/bWeB0vUxlbc/  -> https://www.iesdouyin.com/share/video/7672977497508440818/?...
+
+三个都是同一视频（梅酱紫吃什么｜贵州铁板烧），计数也都是 2138 / 43 / 359。
+
+最终页 HTML 里这个 id 有两处干净标记（curl -L 跟随后取回，36775 字节）：
+
+  <link data-react-helmet="true" rel="canonical" href="https://www.douyin.com/video/7672977497508440818"/>
+  ..."lastPath":"7672977497508440818"...
+
+仓库里已有的解析实现：examples/douyin_download.ts:85 resolveDouyinUrl（走 OkHttp GET + 解析 window._ROUTER_DATA 里的 aweme_id）。
+
+复现命令：
+
+  UA='Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) EdgiOS/121.0.2277.107 Version/17.0 Mobile/15E148 Safari/604.1'
+  curl -s -L -A "$UA" "https://v.douyin.com/<短码>/" -o page.html

@@ -1,0 +1,99 @@
+# 工作流级别回测（ACCESSIBILITY 档，不依赖 Shizuku）
+#
+# 对象：小红书连续工作流 11111111-…（count=3、chunk_minutes=5，30–120 秒一轮）
+#       快手工作流 7cea1682-…（count=3、chunk_minutes=5，30–120 秒一轮）
+# 来源：adb logcat 实时抓取（-s ToolPkg WorkflowExecutor WorkflowRepository WorkflowScheduler WorkflowWorker）。
+# failed=31 是快手包的历史遗留失败记录（契约规定 failed 不自动重发），本次回测没有新增失败。
+
+===== 小红书（36 行）=====
+10-15 18:50:31.202 D/WorkflowExecutor(25602): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 18:50:32.574 D/WorkflowExecutor(25602): 节点执行成功: 先清积压, 结果: {"success":true,"batches":1,"sent":203,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 18:50:33.027 I/ToolPkg (25602): [kuaishou_collector] 本轮第 108 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 18:51:26.355 I/ToolPkg (25602): [kuaishou_collector] 已采集第 1 条：https://v.kuaishou.com/Kg2G6K51
+10-15 18:52:34.548 I/ToolPkg (25602): [kuaishou_collector] 已采集第 2 条：https://v.kuaishou.com/nT2IG8ix
+10-15 18:53:27.379 I/ToolPkg (25602): [kuaishou_collector] 已采集第 3 条：https://v.kuaishou.com/KF4v7ENJ
+10-15 18:53:27.568 D/WorkflowExecutor(25602): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":3,"collected":["https://v.kuaishou.com/Kg2G6K51","https://v.kuaishou.com/nT2IG8ix","https://v.kuaishou.com/KF4v7ENJ"],"skippedDuplicates":0,"skippedAds":2,"skippedUnusable":0,"stopReason":"count","chunkIndex":108,"collectedTotal":237,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/progress.json"}
+10-15 18:53:27.570 D/WorkflowExecutor(25602): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-15 18:53:29.067 D/WorkflowExecutor(25602): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":1,"sent":206,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 18:54:07.811 D/WorkflowExecutor(25602): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 18:54:09.194 D/WorkflowExecutor(25602): 节点执行成功: 先清积压, 结果: {"success":true,"batches":0,"sent":206,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 18:54:09.803 I/ToolPkg (25602): [kuaishou_collector] 本轮第 109 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 18:54:56.249 I/ToolPkg (25602): [kuaishou_collector] 已采集第 1 条：https://v.kuaishou.com/KuiNcZNp
+10-15 18:55:24.828 E/WorkflowWorker(28689): Workflow execution failed: 工作流已禁用: 快手采集与上报
+10-15 18:55:30.337 D/WorkflowExecutor(28689): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 18:55:31.110 D/WorkflowExecutor(28689): 节点执行成功: 先清积压, 结果: {"success":true,"batches":1,"sent":227,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-15 18:55:31.321 I/ToolPkg (28689): [xhs_collector] 本轮第 108 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 18:59:26.684 I/ToolPkg (28689): [xhs_collector] 已采集第 1 条：https://xhslink.cn/o/4DVI09Pqrga
+10-15 19:00:47.626 D/WorkflowExecutor(28689): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":3,"collected":["https://xhslink.cn/o/4DVI09Pqrga"],"skippedDuplicates":10,"skippedAds":0,"skippedUnusable":0,"stopReason":"time","chunkIndex":108,"collectedTotal":228,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/progress.json"}
+10-15 19:00:47.629 D/WorkflowExecutor(28689): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-15 19:00:48.523 D/WorkflowExecutor(28689): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":1,"sent":228,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-15 19:02:24.396 D/WorkflowExecutor(28689): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 19:02:25.185 D/WorkflowExecutor(28689): 节点执行成功: 先清积压, 结果: {"success":true,"batches":0,"sent":228,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-15 19:02:25.564 I/ToolPkg (28689): [xhs_collector] 本轮第 109 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 19:03:22.892 I/ToolPkg (28689): [xhs_collector] 已采集第 1 条：https://xhslink.cn/o/2sZ7DQHIS2g
+10-15 19:07:28.502 I/ToolPkg (28689): [xhs_collector] 已采集第 2 条：https://xhslink.cn/o/7BmccjtqDyU
+10-15 19:07:28.675 D/WorkflowExecutor(28689): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":3,"collected":["https://xhslink.cn/o/2sZ7DQHIS2g","https://xhslink.cn/o/7BmccjtqDyU"],"skippedDuplicates":9,"skippedAds":0,"skippedUnusable":0,"stopReason":"time","chunkIndex":109,"collectedTotal":230,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/progress.json"}
+10-15 19:07:28.677 D/WorkflowExecutor(28689): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-15 19:07:29.731 D/WorkflowExecutor(28689): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":1,"sent":230,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-15 19:08:03.210 D/WorkflowExecutor(28689): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 19:08:04.139 D/WorkflowExecutor(28689): 节点执行成功: 先清积压, 结果: {"success":true,"batches":0,"sent":230,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-15 19:08:04.584 I/ToolPkg (28689): [xhs_collector] 本轮第 110 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 19:09:05.235 I/ToolPkg (28689): [xhs_collector] 已采集第 1 条：https://xhslink.cn/o/AtCIdOLGWGj
+10-15 19:13:17.623 D/WorkflowExecutor(28689): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":3,"collected":["https://xhslink.cn/o/AtCIdOLGWGj"],"skippedDuplicates":6,"skippedAds":0,"skippedUnusable":4,"stopReason":"time","chunkIndex":110,"collectedTotal":231,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/progress.json"}
+10-15 19:13:17.625 D/WorkflowExecutor(28689): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-15 19:13:18.860 D/WorkflowExecutor(28689): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":1,"sent":231,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+
+===== 快手（53 行）=====
+10-15 19:07:28.502 I/ToolPkg (28689): [xhs_collector] 已采集第 2 条：https://xhslink.cn/o/7BmccjtqDyU
+10-15 19:07:28.675 D/WorkflowExecutor(28689): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":3,"collected":["https://xhslink.cn/o/2sZ7DQHIS2g","https://xhslink.cn/o/7BmccjtqDyU"],"skippedDuplicates":9,"skippedAds":0,"skippedUnusable":0,"stopReason":"time","chunkIndex":109,"collectedTotal":230,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/progress.json"}
+10-15 19:07:28.677 D/WorkflowExecutor(28689): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-15 19:07:29.731 D/WorkflowExecutor(28689): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":1,"sent":230,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-15 19:08:03.210 D/WorkflowExecutor(28689): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 19:08:04.139 D/WorkflowExecutor(28689): 节点执行成功: 先清积压, 结果: {"success":true,"batches":0,"sent":230,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-15 19:08:04.584 I/ToolPkg (28689): [xhs_collector] 本轮第 110 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 19:09:05.235 I/ToolPkg (28689): [xhs_collector] 已采集第 1 条：https://xhslink.cn/o/AtCIdOLGWGj
+10-15 19:13:17.623 D/WorkflowExecutor(28689): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":3,"collected":["https://xhslink.cn/o/AtCIdOLGWGj"],"skippedDuplicates":6,"skippedAds":0,"skippedUnusable":4,"stopReason":"time","chunkIndex":110,"collectedTotal":231,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/progress.json"}
+10-15 19:13:17.625 D/WorkflowExecutor(28689): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-15 19:13:18.860 D/WorkflowExecutor(28689): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":1,"sent":231,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-15 19:14:39.417 D/WorkflowExecutor(16740): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 19:14:40.361 D/WorkflowExecutor(16740): 节点执行成功: 先清积压, 结果: {"success":true,"batches":1,"sent":207,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 19:14:40.614 I/ToolPkg (16740): [kuaishou_collector] 本轮第 110 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 19:14:52.661 E/WorkflowWorker(16740): Workflow execution failed: 工作流已禁用: 小红书采集与上报（连续采集测试）
+10-15 19:15:39.366 I/ToolPkg (16740): [kuaishou_collector] 已采集第 1 条：https://v.kuaishou.com/7Ea352ex
+10-15 19:16:41.947 I/ToolPkg (16740): [kuaishou_collector] 已采集第 2 条：https://v.kuaishou.com/Kv0gZjkx
+10-15 19:17:18.541 I/ToolPkg (16740): [kuaishou_collector] 已采集第 3 条：https://v.kuaishou.com/JfaNASXA
+10-15 19:17:18.603 D/WorkflowExecutor(16740): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":3,"collected":["https://v.kuaishou.com/7Ea352ex","https://v.kuaishou.com/Kv0gZjkx","https://v.kuaishou.com/JfaNASXA"],"skippedDuplicates":0,"skippedAds":1,"skippedUnusable":0,"stopReason":"count","chunkIndex":110,"collectedTotal":241,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/progress.json"}
+10-15 19:17:18.604 D/WorkflowExecutor(16740): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-15 19:17:19.504 D/WorkflowExecutor(16740): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":1,"sent":210,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 19:17:57.550 D/WorkflowExecutor(16740): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 19:17:58.315 D/WorkflowExecutor(16740): 节点执行成功: 先清积压, 结果: {"success":true,"batches":0,"sent":210,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 19:17:58.677 I/ToolPkg (16740): [kuaishou_collector] 本轮第 111 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 19:18:45.610 I/ToolPkg (16740): [kuaishou_collector] 已采集第 1 条：https://v.kuaishou.com/7DapHXo1
+10-15 19:19:51.377 I/ToolPkg (16740): [kuaishou_collector] 已采集第 2 条：https://v.kuaishou.com/n2bHFNWV
+10-15 19:20:41.956 I/ToolPkg (16740): [kuaishou_collector] 已采集第 3 条：https://v.kuaishou.com/J9y1VvSz
+10-15 19:20:42.041 D/WorkflowExecutor(16740): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":3,"collected":["https://v.kuaishou.com/7DapHXo1","https://v.kuaishou.com/n2bHFNWV","https://v.kuaishou.com/J9y1VvSz"],"skippedDuplicates":0,"skippedAds":2,"skippedUnusable":0,"stopReason":"count","chunkIndex":111,"collectedTotal":244,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/progress.json"}
+10-15 19:20:42.042 D/WorkflowExecutor(16740): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-15 19:20:43.059 D/WorkflowExecutor(16740): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":1,"sent":213,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 19:22:40.294 D/WorkflowExecutor(16740): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 19:22:41.061 D/WorkflowExecutor(16740): 节点执行成功: 先清积压, 结果: {"success":true,"batches":0,"sent":213,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 19:22:41.438 I/ToolPkg (16740): [kuaishou_collector] 本轮第 112 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 19:23:40.181 I/ToolPkg (16740): [kuaishou_collector] 已采集第 1 条：https://v.kuaishou.com/n1l1SQ7R
+10-15 19:24:28.664 I/ToolPkg (16740): [kuaishou_collector] 已采集第 2 条：https://v.kuaishou.com/JvaqVzPw
+10-15 19:25:18.331 I/ToolPkg (16740): [kuaishou_collector] 已采集第 3 条：https://v.kuaishou.com/J5yG0Ukc
+10-15 19:25:18.480 D/WorkflowExecutor(16740): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":3,"collected":["https://v.kuaishou.com/n1l1SQ7R","https://v.kuaishou.com/JvaqVzPw","https://v.kuaishou.com/J5yG0Ukc"],"skippedDuplicates":0,"skippedAds":2,"skippedUnusable":0,"stopReason":"count","chunkIndex":112,"collectedTotal":247,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/progress.json"}
+10-15 19:25:18.482 D/WorkflowExecutor(16740): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-15 19:25:19.734 D/WorkflowExecutor(16740): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":1,"sent":216,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 19:26:58.485 D/WorkflowExecutor(16740): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 19:26:59.334 D/WorkflowExecutor(16740): 节点执行成功: 先清积压, 结果: {"success":true,"batches":0,"sent":216,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 19:26:59.770 I/ToolPkg (16740): [kuaishou_collector] 本轮第 113 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 19:27:57.889 I/ToolPkg (16740): [kuaishou_collector] 已采集第 1 条：https://v.kuaishou.com/Kk22zifn
+10-15 19:28:45.788 I/ToolPkg (16740): [kuaishou_collector] 已采集第 2 条：https://v.kuaishou.com/713Yy3Yy
+10-15 19:29:36.146 I/ToolPkg (16740): [kuaishou_collector] 已采集第 3 条：https://v.kuaishou.com/KMZpZn2b
+10-15 19:29:36.349 D/WorkflowExecutor(16740): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":3,"collected":["https://v.kuaishou.com/Kk22zifn","https://v.kuaishou.com/713Yy3Yy","https://v.kuaishou.com/KMZpZn2b"],"skippedDuplicates":0,"skippedAds":2,"skippedUnusable":0,"stopReason":"count","chunkIndex":113,"collectedTotal":250,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/progress.json"}
+10-15 19:29:36.350 D/WorkflowExecutor(16740): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-15 19:29:37.622 D/WorkflowExecutor(16740): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":1,"sent":219,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 19:31:01.634 D/WorkflowExecutor(16740): 执行节点: 先清积压 (execute_flush_backlog)
+10-15 19:31:02.606 D/WorkflowExecutor(16740): 节点执行成功: 先清积压, 结果: {"success":true,"batches":0,"sent":219,"failed":31,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","note":""}
+10-15 19:31:03.075 I/ToolPkg (16740): [kuaishou_collector] 本轮第 114 片开始，本片目标 3 条，时间上限 5 分钟
+10-15 19:31:47.660 I/ToolPkg (16740): [kuaishou_collector] 已采集第 1 条：https://v.kuaishou.com/KrsuuSEn
+10-15 19:32:52.265 I/ToolPkg (16740): [kuaishou_collector] 已采集第 2 条：https://v.kuaishou.com/7DE3mpJ5

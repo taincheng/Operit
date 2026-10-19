@@ -3,16 +3,20 @@
 //
 // 配置存在宿主的环境变量里（EnvPreferences，App 私有 SharedPreferences），
 // 键名与子包脚本里的 ENV_BASE_URL / ENV_TOKEN 必须保持一致。
-// 这套存储是全局键值、不按包隔离，所以两个键都带 DOUYIN_COLLECTOR_ 前缀。
+// 这套存储是全局键值、不按包隔离；服务端只有一个，所以键名是中立的，
+// 抖音采集与小红书采集共用同一组配置。
+//
+// 早期版本用的是带 DOUYIN_ 前缀的键，页面加载时会调子包的迁移工具搬过来。
 //
 // 关于扫码：这里只做「粘贴一段配置文本」的解析。真扫码需要先从相册或相机取到二维码图片，
 // 再把它解码成文本，而脚本与 UI 模块都没有图像解码接口，宿主那份 zxing 解码能力没有暴露出来。
 // 所以扫码在 App 外完成，扫出来的文本粘进这个页面即可。
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Screen;
-const ENV_BASE_URL = "DOUYIN_COLLECTOR_BASE_URL";
-const ENV_TOKEN = "DOUYIN_COLLECTOR_TOKEN";
+const ENV_BASE_URL = "COLLECTOR_BASE_URL";
+const ENV_TOKEN = "COLLECTOR_TOKEN";
 const CHECK_TOOL = "douyin_collector:douyin_upload_config_check";
+const MIGRATE_TOOL = "douyin_collector:douyin_migrate_upload_config";
 const CLIPBOARD_TOOL = "read_clipboard";
 const ZH = {
     title: "抖音采集设置",
@@ -45,6 +49,7 @@ const ZH = {
     errorClipboardEmpty: "剪贴板是空的，或没有文本内容。",
     errorClipboardShape: "读取剪贴板返回了非文本结果，没能拿到配置文本。",
     errorCheckUnreadable: "自检结果读不出来，工具返回的结构不符合预期，详情见应用日志。",
+    errorMigrateFailed: "旧配置键迁移失败，详情见应用日志。可以手动重新填写地址与令牌保存一次。",
     verdictOk: "地址可达，令牌有效。",
     verdictTokenRejected: "地址可达，但令牌被拒绝。",
     verdictPathNotFound: "地址可达，但没有这个接口路径。",
@@ -84,6 +89,7 @@ const EN = {
     errorClipboardEmpty: "The clipboard is empty or holds no text.",
     errorClipboardShape: "Reading the clipboard returned a non-text result, so no configuration text was obtained.",
     errorCheckUnreadable: "The check result could not be read; the tool returned an unexpected structure. See the app log for details.",
+    errorMigrateFailed: "Migrating the legacy configuration keys failed. See the app log for details; you can also re-enter and save the base URL and token by hand.",
     verdictOk: "Reachable and the token is accepted.",
     verdictTokenRejected: "Reachable but the token was rejected.",
     verdictPathNotFound: "Reachable but the endpoint path does not exist.",
@@ -301,6 +307,25 @@ function Screen(ctx) {
     const parsePasted = () => {
         fillFrom(pasted, texts.pasteParsed);
     };
+    // 页面加载时先把早期版本带 DOUYIN_ 前缀的旧键搬到中立键上，再刷新两个输入框。
+    //
+    // 待迁移的键不只是本包留下的，小红书采集页也调同一个迁移，
+    // 两边谁先被打开都不影响结果。迁移是幂等的，跑完之后每次都是空操作。
+    //
+    // 必须把 promise 返回给宿主，不能写成 `() => { void migrateOnLoad(); }`：
+    // 那样宿主会把这个动作当同步的，动作一结束就注销状态变化监听，
+    // await 之后的 setBaseUrl 就没有监听者，页面会一直停在迁移前的空值上。
+    const migrateOnLoad = async () => {
+        try {
+            await ctx.callTool(MIGRATE_TOOL, {});
+            setBaseUrl(ctx.getEnv(ENV_BASE_URL) ?? "");
+            setToken(ctx.getEnv(ENV_TOKEN) ?? "");
+        }
+        catch (error) {
+            console.log(`旧配置键迁移失败：${toErrorText(error)}`);
+            reportError(texts.errorMigrateFailed);
+        }
+    };
     const savedBaseUrl = ctx.getEnv(ENV_BASE_URL) ?? "";
     const savedToken = ctx.getEnv(ENV_TOKEN) ?? "";
     const effective = savedBaseUrl
@@ -373,5 +398,11 @@ function Screen(ctx) {
             }),
         ]));
     }
-    return ctx.UI.LazyColumn({ fillMaxSize: true, padding: 16, spacing: 12 }, children);
+    return ctx.UI.LazyColumn({
+        fillMaxSize: true,
+        padding: 16,
+        spacing: 12,
+        // 返回 promise（不要用 void 包一层），让宿主按异步动作处理，见 migrateOnLoad 的注释
+        onLoad: () => migrateOnLoad(),
+    }, children);
 }

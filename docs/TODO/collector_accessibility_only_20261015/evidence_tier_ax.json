@@ -1,0 +1,76 @@
+{
+    "success": true,
+    "scriptPath": "/sdcard/Android/data/com.ai.assistance.operit.debug/js_temp/probe_ax_only.js",
+    "functionName": "tierReport",
+    "params": {},
+    "startedAtMs": 1792057122524,
+    "finishedAtMs": 1792057128448,
+    "durationMs": 5924,
+    "result": {
+        "deviceInfo": {
+            "model": "24094RAD4C",
+            "screenResolution": "1080x2400",
+            "screenDensity": 2.8125
+        },
+        "shellWmSize": {
+            "returned": false,
+            "error": "ADB command execution failed (exit code: -1): Current ACCESSIBILITY unavailable: executor unavailable; Accessibility service is not enabled"
+        },
+        "page": {
+            "packageName": "com.ss.android.ugc.aweme",
+            "activityName": "androidx.compose.ui.platform.ComposeView",
+            "nodeCount": 829,
+            "texts": [
+                "2086",
+                "39",
+                "347",
+                "1763",
+                "点击推荐",
+                "15.8km",
+                "|",
+                "俏婶娘贵阳铁板烧",
+                "·",
+                "美食人气榜",
+                "在深圳坂田吃到了贵州铁板烧！！真的好好吃😭... 展开",
+                "@梅酱紫吃什么",
+                " · 08月12日",
+                "相关搜索",
+                "俏婶娘贵阳铁板烧团购",
+                "搜你想看的",
+                "搜索",
+                "C.at",
+                "C.AT.LM（★♥★）",
+                "C.atbaby"
+            ],
+            "contentDescs": [
+                "关注",
+                "梅酱紫吃什么",
+                "未点赞，喜欢2086，按钮",
+                "评论39，按钮",
+                "评论39，按钮",
+                "未选中，收藏347，按钮",
+                "分享1763，按钮",
+                "音乐，@梅酱紫吃什么创作的原声，按钮",
+                "发弹幕，按钮",
+                "点击推荐按钮",
+                "发布时间：08月12日",
+                "点击查看更多，按钮",
+                "暂停视频，按钮",
+                "冯校长老火锅(深圳布吉…﻿﻿﻿﻿",
+                "4.8",
+                "超赞",
+                "¥106/人",
+                "18.6km",
+                "布吉街",
+                "详情"
+            ]
+        },
+        "readClipboard": {
+            "returned": true,
+            "text": ""
+        }
+    },
+    "events": [
+        "completed: {\"deviceInfo\":{\"model\":\"24094RAD4C\",\"screenResolution\":\"1080x2400\",\"screenDensity\":2.8125},\"shellWmSize\":{\"returned\":false,\"error\":\"ADB command execution failed (exit code: -1): Current ACCESSIBILITY unavailable: executor unavailable; Ac..."
+    ]
+}

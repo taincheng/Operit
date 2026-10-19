@@ -1,0 +1,15 @@
+# 小红书正式工作流 021fc29b（interval 15 分钟、count=10、chunk_minutes=18）在 ACCESSIBILITY 档的抓取
+# 来源：adb logcat 实时抓取（-s ToolPkg WorkflowExecutor WorkflowRepository WorkflowScheduler WorkflowWorker）
+# 第 111 片全是重复（去重跳过 10，stopReason=duplicates）；第 112 片满额 10 条，去重跳过 22、广告 1、版式不符 1。
+
+10-16 09:17:58.227 D/WorkflowExecutor(30147): 执行节点: 先清积压 (execute_flush_backlog)
+10-16 09:17:58.806 D/WorkflowExecutor(30147): 节点执行成功: 先清积压, 结果: {"success":true,"batches":0,"sent":231,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-16 09:17:58.966 I/ToolPkg (30147): [xhs_collector] 本轮第 111 片开始，本片目标 10 条，时间上限 18 分钟
+10-16 09:22:42.435 D/WorkflowExecutor(30147): 节点执行成功: 采一片分享链接, 结果: {"success":true,"keyword":"家装","requested":10,"collected":[],"skippedDuplicates":10,"skippedAds":0,"skippedUnusable":0,"stopReason":"duplicates","chunkIndex":111,"collectedTotal":231,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/progress.json"}
+10-16 09:22:42.437 D/WorkflowExecutor(30147): 执行节点: 上报待发送记录 (execute_flush_outbox)
+10-16 09:22:43.264 D/WorkflowExecutor(30147): 节点执行成功: 上报待发送记录, 结果: {"success":true,"batches":0,"sent":231,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-16 09:37:43.695 D/WorkflowExecutor(30147): 执行节点: 先清积压 (execute_flush_backlog)
+10-16 09:37:44.454 D/WorkflowExecutor(30147): 节点执行成功: 先清积压, 结果: {"success":true,"batches":0,"sent":231,"failed":0,"pending":0,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","note":""}
+10-16 09:37:44.820 I/ToolPkg (30147): [xhs_collector] 本轮第 112 片开始，本片目标 10 条，时间上限 18 分钟
+10-16 09:38:43.408 I/ToolPkg (30147): [xhs_collector] 已采集第 1 条：https://xhslink.cn/o/5RyEkTS4Kvu
+10-16 09:41:27.122 I/ToolPkg (30147): [xhs_collector] 已采集第 2 条：https://xhslink.cn/o/66lFgudICDX

@@ -1,0 +1,16 @@
+# 小红书 / 快手：无障碍档回归摘录（抖音见 evidence_regression_ax_tier.log）
+#
+# 来源：设备上 com.ai.assistance.operit.debug 的 files/logs/operit.log。
+# 该文件会滚动，下面是每轮跑完当场摘下来的原文（时间戳原样保留），不要指望事后还能从设备上翻到。
+
+# --- 小红书包 0.2.0：chunk 106 成功拿到 xhslink ---
+2026-10-15 18:39:19.336 I/ToolPkg: [xhs_collector] 点击「评论输入框」坐标=(540,1154) class=EditText desc= text=让大家听到你的声音 bounds=[84,1105][996,1204]
+2026-10-15 18:39:38.215 I/ToolPkg: [xhs_collector] 已采集第 1 条：https://xhslink.cn/o/4NRSKPo3tXn
+2026-10-15 18:39:38.268 D/WorkflowRepository: Node execute_ax_xhs state: Success(result={"success":true,"keyword":"家装","requested":1,"collected":["https://xhslink.cn/o/4NRSKPo3tXn"],"skippedDuplicates":1,"skippedAds":0,"skippedUnusable":0,"stopReason":"count","chunkIndex":106,"collectedTotal":227,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/progress.json"})
+
+# --- 快手包 0.2.0：chunk 106 成功拿到 v.kuaishou.com 短链 ---
+2026-10-15 18:47:20.418 D/WorkflowExecutor: 执行节点: 采一条分享链接 (execute_ax_ks)
+2026-10-15 18:47:20.419 D/WorkflowRepository: Node execute_ax_ks state: com.ai.assistance.operit.core.workflow.NodeExecutionState$Running@7bc1dec
+2026-10-15 18:48:11.195 D/WorkflowRepository: Node execute_ax_ks state: Success(result={"success":true,"keyword":"家装","requested":1,"collected":["https://v.kuaishou.com/JRZgcitt"],"skippedDuplicates":0,"skippedAds":0,"skippedUnusable":0,"stopReason":"count","chunkIndex":106,"collectedTotal":234,"recordsFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/records.jsonl","outboxFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/outbox.json","progressFile":"/storage/emulated/0/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/progress.json"})
+2026-10-15 18:49:28.585 D/WorkflowExecutor: 执行节点: 采一条分享链接 (execute_ax_ks)
+2026-10-15 18:49:28.587 D/WorkflowRepository: Node execute_ax_ks state: com.ai.assistance.operit.core.workflow.NodeExecutionState$Running@7bc1dec
