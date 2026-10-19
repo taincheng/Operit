@@ -6368,6 +6368,7 @@
     <string name="toolreg_list_installed_apps_desc">列出已安装应用</string>
     <string name="toolreg_start_app_desc">启动应用: %1$s</string>
     <string name="toolreg_stop_app_desc">停止应用: %1$s</string>
+    <string name="toolreg_read_clipboard_desc">读取系统剪贴板文本</string>
     <string name="toolreg_get_notifications_desc_with_ongoing">获取设备通知 (最多 %1$s 条)，包括常驻通知</string>
     <string name="toolreg_get_notifications_desc">获取设备通知 (最多 %1$s 条)</string>
     <string name="toolreg_get_device_location_high_accuracy_desc">获取设备位置 (高精度)</string>

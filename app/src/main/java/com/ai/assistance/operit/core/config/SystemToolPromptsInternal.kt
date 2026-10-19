@@ -2625,6 +2625,11 @@ object SystemToolPromptsInternal {
                                 )
                         ),
                         ToolPrompt(
+                            name = "read_clipboard",
+                            description = "Read the current system clipboard text.",
+                            parametersStructured = emptyList()
+                        ),
+                        ToolPrompt(
                             name = "stop_app",
                             description = "Stop an app background process.",
                             parametersStructured =
@@ -5615,6 +5620,11 @@ object SystemToolPromptsInternal {
                                         required = false
                                     )
                                 )
+                        ),
+                        ToolPrompt(
+                            name = "read_clipboard",
+                            description = "读取系统剪贴板的文本内容。",
+                            parametersStructured = emptyList()
                         ),
                         ToolPrompt(
                             name = "stop_app",

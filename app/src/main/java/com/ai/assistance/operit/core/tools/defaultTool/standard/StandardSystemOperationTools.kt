@@ -8,6 +8,7 @@ import android.app.AppOpsManager
 import android.app.usage.UsageStatsManager
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
+import android.content.ClipboardManager
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
@@ -560,6 +561,32 @@ open class StandardSystemOperationTools(private val context: Context) {
                 success = false,
                 result = StringResultData(""),
                 error = "Error starting app: ${e.message}"
+            )
+        }
+    }
+
+    /**
+     * 读取系统剪贴板的文本。
+     * 抖音这类应用只把分享链接写进剪贴板，节点树里读不到，只能靠这个接口取回。
+     */
+    open suspend fun readClipboard(tool: AITool): ToolResult {
+        return try {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = clipboard.primaryClip
+            val text =
+                    if (clip != null && clip.itemCount > 0) {
+                        clip.getItemAt(0).coerceToText(context).toString()
+                    } else {
+                        ""
+                    }
+            ToolResult(toolName = tool.name, success = true, result = StringResultData(text), error = "")
+        } catch (e: Exception) {
+            AppLogger.e(TAG, "读取剪贴板时出错", e)
+            ToolResult(
+                    toolName = tool.name,
+                    success = false,
+                    result = StringResultData(""),
+                    error = "Error reading clipboard: ${e.message}"
             )
         }
     }

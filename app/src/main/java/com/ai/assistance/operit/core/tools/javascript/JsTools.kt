@@ -611,6 +611,8 @@ fun getJsToolsDefinition(): String {
                     return toolCall("start_app", params);
                 },
                 stopApp: (packageName) => toolCall("stop_app", { package_name: packageName }),
+                // 读取剪贴板：应用写进剪贴板的内容（例如分享链接）只能这样取回
+                readClipboard: () => toolCall("read_clipboard", {}),
                 listApps: (includeSystem) => toolCall("list_installed_apps", { include_system: !!includeSystem }),
                 // 获取设备通知
                 getNotifications: (limit = 10, includeOngoing = false) => 

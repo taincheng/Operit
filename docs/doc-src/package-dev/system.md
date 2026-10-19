@@ -125,6 +125,14 @@ Tools.System.music.status()
 
 启动应用，可选指定 Activity，返回 `AppOperationData`。
 
+#### `readClipboard()`
+
+读取系统剪贴板的文本，返回字符串。剪贴板没有文本时返回空字符串。
+
+有些应用只把结果写进剪贴板，节点树里读不到，例如抖音分享面板的「分享链接」项。这类场景必须先让目标应用完成复制，再调用本方法取回内容。
+
+Android 10 起后台应用读取剪贴板受系统限制，宿主需要具备 `READ_CLIPBOARD` 这条 appop，否则只会读到空字符串。
+
 #### `getAppUsageTime(options?)`
 
 读取 Android Usage Access 提供的前台应用使用时长，返回 `AppUsageTimeResultData`。

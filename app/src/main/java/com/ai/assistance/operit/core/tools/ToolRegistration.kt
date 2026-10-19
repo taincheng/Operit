@@ -2355,6 +2355,15 @@ fun registerAllTools(handler: AIToolHandler, context: Context) {
             }
     )
 
+    // 读取剪贴板
+    handler.registerTool(
+            name = "read_clipboard",
+            descriptionGenerator = { _ -> s(R.string.toolreg_read_clipboard_desc) },
+            executor = { tool ->
+                runBlocking(Dispatchers.IO) { systemOperationTools.readClipboard(tool) }
+            }
+    )
+
     // 停止应用
     handler.registerTool(
             name = "stop_app",

@@ -81,6 +81,13 @@ export namespace System {
     function stopApp(packageName: string): Promise<AppOperationData>;
 
     /**
+     * Read the current system clipboard text. Apps such as Douyin only expose a
+     * share link by writing it to the clipboard, so this is the only way to get it.
+     * Returns an empty string when the clipboard has no text.
+     */
+    function readClipboard(): Promise<string>;
+
+    /**
      * List installed apps
      * @param includeSystem - Whether to include system apps
      */
