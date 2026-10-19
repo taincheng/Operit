@@ -150,6 +150,7 @@
     <string name="workflow_schedule_dialog_title">Konfigurasi Penjadualan</string>
     <string name="workflow_schedule_type_label">Jenis Penjadualan</string>
     <string name="workflow_schedule_type_interval">Selang Tetap</string>
+    <string name="workflow_schedule_type_continuous">Jalan Berterusan</string>
     <string name="workflow_schedule_type_specific_time">Masa Tertentu</string>
     <string name="workflow_schedule_type_cron">Ungkapan Cron</string>
 
@@ -160,6 +161,11 @@
     <string name="workflow_interval_value_label">Selang</string>
     <string name="workflow_interval_unit_label">Unit</string>
     <string name="workflow_schedule_min_interval_hint">Nota: Selang minimum WorkManager ialah 15 minit</string>
+    <string name="workflow_continuous_config_title">Konfigurasi Jalan Berterusan</string>
+    <string name="workflow_continuous_min_gap_label">Selang minimum (saat)</string>
+    <string name="workflow_continuous_max_gap_label">Selang maksimum (saat)</string>
+    <string name="workflow_continuous_gap_hint">Selepas satu pusingan tamat, tunggu masa rawak dalam julat ini sebelum memulakan pusingan seterusnya. Selang dikira dari saat pusingan sebelumnya tamat</string>
+    <string name="workflow_continuous_gap_invalid">Kedua-dua selang mesti nombor bulat positif, dan selang maksimum tidak boleh kurang daripada minimum</string>
     <string name="workflow_specific_time_config_title">Konfigurasi Masa Tertentu</string>
     <string name="workflow_date_label">Tarikh</string>
     <string name="workflow_time_label">Masa</string>

@@ -6,6 +6,7 @@ import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -15,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.ai.assistance.operit.R
 import java.text.SimpleDateFormat
@@ -44,6 +46,22 @@ fun ScheduleConfigDialog(
     }
     var intervalUnit by remember { mutableStateOf("minutes") }
     var intervalUnitExpanded by remember { mutableStateOf(false) }
+
+    // Continuous configuration：一轮跑完到下一轮开始之间的随机间隔，单位秒
+    var continuousMinGapSeconds by remember {
+        mutableStateOf(initialConfig["min_gap_ms"]?.toLongOrNull()?.let { it / 1000 }?.toString() ?: "30")
+    }
+    var continuousMaxGapSeconds by remember {
+        mutableStateOf(initialConfig["max_gap_ms"]?.toLongOrNull()?.let { it / 1000 }?.toString() ?: "120")
+    }
+    // 合法时给出毫秒值，非法时为 null；界面用它决定确认按钮是否可用，确认时用它取值
+    val continuousGapMs: Pair<Long, Long>? =
+        continuousMinGapSeconds.toLongOrNull()?.takeIf { it > 0 }?.let { minSeconds ->
+            continuousMaxGapSeconds.toLongOrNull()?.takeIf { it >= minSeconds }?.let { maxSeconds ->
+                minSeconds * 1000 to maxSeconds * 1000
+            }
+        }
+    val continuousGapValid = continuousGapMs != null
     
     // Specific time configuration - 使用 Calendar 来管理日期和时间
     val calendar = remember { Calendar.getInstance() }
@@ -78,6 +96,7 @@ fun ScheduleConfigDialog(
     
     val scheduleTypes = mapOf(
         "interval" to stringResource(R.string.workflow_schedule_type_interval),
+        "continuous" to stringResource(R.string.workflow_schedule_type_continuous),
         "specific_time" to stringResource(R.string.workflow_schedule_type_specific_time),
         "cron" to stringResource(R.string.workflow_schedule_type_cron)
     )
@@ -200,6 +219,51 @@ fun ScheduleConfigDialog(
                         )
                     }
                     
+                    "continuous" -> {
+                        Text(
+                            text = stringResource(R.string.workflow_continuous_config_title),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            OutlinedTextField(
+                                value = continuousMinGapSeconds,
+                                onValueChange = { continuousMinGapSeconds = it },
+                                label = { Text(stringResource(R.string.workflow_continuous_min_gap_label)) },
+                                modifier = Modifier.weight(1f),
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+
+                            OutlinedTextField(
+                                value = continuousMaxGapSeconds,
+                                onValueChange = { continuousMaxGapSeconds = it },
+                                label = { Text(stringResource(R.string.workflow_continuous_max_gap_label)) },
+                                modifier = Modifier.weight(1f),
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+                        }
+
+                        if (!continuousGapValid) {
+                            Text(
+                                text = stringResource(R.string.workflow_continuous_gap_invalid),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+
+                        Text(
+                            text = stringResource(R.string.workflow_continuous_gap_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
                     "specific_time" -> {
                         Text(
                             text = stringResource(R.string.workflow_specific_time_config_title),
@@ -379,16 +443,19 @@ fun ScheduleConfigDialog(
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.primary
                 )
-                
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(stringResource(R.string.workflow_repeat_label))
-                    Switch(
-                        checked = repeat,
-                        onCheckedChange = { repeat = it }
-                    )
+
+                // 连续运行本身就是反复执行，没有「重复」这一说，写了反而误导
+                if (scheduleType != "continuous") {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(stringResource(R.string.workflow_repeat_label))
+                        Switch(
+                            checked = repeat,
+                            onCheckedChange = { repeat = it }
+                        )
+                    }
                 }
                 
                 Row(
@@ -405,11 +472,15 @@ fun ScheduleConfigDialog(
         },
         confirmButton = {
             TextButton(
+                enabled = scheduleType != "continuous" || continuousGapValid,
                 onClick = {
                     val config = mutableMapOf<String, String>()
                     config["schedule_type"] = scheduleType
                     config["enabled"] = enabled.toString()
-                    config["repeat"] = repeat.toString()
+                    // 连续运行不需要 repeat：它本身就是反复执行
+                    if (scheduleType != "continuous") {
+                        config["repeat"] = repeat.toString()
+                    }
                     
                     when (scheduleType) {
                         "interval" -> {
@@ -420,6 +491,10 @@ fun ScheduleConfigDialog(
                                 else -> 1 // minutes
                             }
                             config["interval_ms"] = (value * multiplier * 60 * 1000).toString()
+                        }
+                        "continuous" -> continuousGapMs?.let { (minGapMs, maxGapMs) ->
+                            config["min_gap_ms"] = minGapMs.toString()
+                            config["max_gap_ms"] = maxGapMs.toString()
                         }
                         "specific_time" -> {
                             // 构造日期时间字符串

@@ -165,6 +165,7 @@
     <string name="workflow_schedule_dialog_title">定时配置</string>
     <string name="workflow_schedule_type_label">定时类型</string>
     <string name="workflow_schedule_type_interval">固定间隔</string>
+    <string name="workflow_schedule_type_continuous">连续运行</string>
     <string name="workflow_schedule_type_specific_time">特定时间</string>
     <string name="workflow_schedule_type_cron">Cron表达式</string>
     <string name="workflow_interval_unit_minutes">分钟</string>
@@ -174,6 +175,11 @@
     <string name="workflow_interval_value_label">间隔</string>
     <string name="workflow_interval_unit_label">单位</string>
     <string name="workflow_schedule_min_interval_hint">注意：WorkManager 最小间隔为 15 分钟</string>
+    <string name="workflow_continuous_config_title">连续运行配置</string>
+    <string name="workflow_continuous_min_gap_label">最小间隔（秒）</string>
+    <string name="workflow_continuous_max_gap_label">最大间隔（秒）</string>
+    <string name="workflow_continuous_gap_hint">一轮执行完成后随机等待该区间内的时长再开始下一轮，间隔从上一轮结束时刻起算</string>
+    <string name="workflow_continuous_gap_invalid">两个间隔都要是正整数，且最大间隔不小于最小间隔</string>
     <string name="workflow_specific_time_config_title">特定时间配置</string>
     <string name="workflow_date_label">日期</string>
     <string name="workflow_time_label">时间</string>

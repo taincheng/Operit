@@ -1,24 +1,24 @@
 {
   "id": "douyin-collect-and-upload-seed",
   "name": "抖音采集与上报",
-  "description": "每 15 分钟先清一次积压，再采一片抖音分享链接，采完再上报一次。带手动触发节点，方便随时试跑。导入后可按需修改关键词与间隔。",
+  "description": "一轮先清一次积压，再采一片抖音分享链接，采完再上报一次；整轮结束后随机等 30–120 秒接着跑下一轮。带手动触发节点，方便随时试跑。导入后可按需修改关键词与间隔。",
   "nodes": [
     {
       "__type": "com.ai.assistance.operit.data.model.TriggerNode",
       "id": "trigger_schedule_douyin",
       "type": "trigger",
-      "name": "每 15 分钟定时触发",
-      "description": "定时器只负责点火，分片与续跑逻辑都在采集脚本内",
+      "name": "连续运行：每轮结束等 30–120 秒",
+      "description": "上一轮整轮返回之后才开始计时，等完随机间隔接着跑下一轮；不是固定节拍空等。定时器只负责点火，分片与续跑逻辑都在采集脚本内",
       "position": {
         "x": 120.0,
         "y": 120.0
       },
       "triggerType": "schedule",
       "triggerConfig": {
-        "schedule_type": "interval",
-        "interval_ms": "900000",
-        "enabled": "true",
-        "repeat": "true"
+        "schedule_type": "continuous",
+        "min_gap_ms": "30000",
+        "max_gap_ms": "120000",
+        "enabled": "true"
       }
     },
     {
@@ -53,7 +53,7 @@
       "id": "execute_collect_chunk",
       "type": "execute",
       "name": "采一片分享链接",
-      "description": "采到条数目标或时间上限就结束本片，进度写进 progress.json，下一片接着跑不会重采",
+      "description": "采到条数目标或时间上限就结束本片，进度写进 progress.json，下一片接着跑不会重采。连续模式下轮次密，时间上限收到 5 分钟，让整轮远早于宿主的单次执行上限",
       "position": {
         "x": 1400.0,
         "y": 290.0
@@ -70,7 +70,7 @@
         },
         "chunk_minutes": {
           "__type": "com.ai.assistance.operit.data.model.ParameterValue.StaticValue",
-          "value": "18"
+          "value": "5"
         }
       },
       "jsCode": null
@@ -80,7 +80,7 @@
       "id": "execute_flush_outbox",
       "type": "execute",
       "name": "上报待发送记录",
-      "description": "把 outbox 里 pending 的记录按每批 20 条发给服务端，需要先在该插件配置目录放好 config.json",
+      "description": "把 outbox 里 pending 的记录按每批 20 条发给服务端。上报地址与令牌在工具箱的采集设置页里配置，存在宿主环境变量里、不落文件",
       "position": {
         "x": 2040.0,
         "y": 290.0

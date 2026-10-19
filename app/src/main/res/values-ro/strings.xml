@@ -166,6 +166,7 @@
     <string name="workflow_schedule_dialog_title">Configurare programată</string>
     <string name="workflow_schedule_type_label">Tipuri de temporizare</string>
     <string name="workflow_schedule_type_interval">Interval fix</string>
+    <string name="workflow_schedule_type_continuous">Executare continuă</string>
     <string name="workflow_schedule_type_specific_time">La o anumită oră</string>
     <string name="workflow_schedule_type_cron">CronExpresie</string>
     <string name="workflow_interval_unit_minutes">minute</string>
@@ -175,6 +176,11 @@
     <string name="workflow_interval_value_label">interval</string>
     <string name="workflow_interval_unit_label">Unitate</string>
     <string name="workflow_schedule_min_interval_hint">Atenție:WorkManager Intervalul minim este de 15 minute</string>
+    <string name="workflow_continuous_config_title">Configurare executare continuă</string>
+    <string name="workflow_continuous_min_gap_label">Interval minim (secunde)</string>
+    <string name="workflow_continuous_max_gap_label">Interval maxim (secunde)</string>
+    <string name="workflow_continuous_gap_hint">După ce o rundă se termină, așteaptă un timp aleatoriu din acest interval înainte de a începe următoarea rundă. Intervalul se calculează din momentul în care s-a terminat runda anterioară</string>
+    <string name="workflow_continuous_gap_invalid">Ambele intervale trebuie să fie numere întregi pozitive, iar cel maxim nu poate fi mai mic decât cel minim</string>
     <string name="workflow_specific_time_config_title">Configurare pentru un interval de timp specific</string>
     <string name="workflow_date_label">Data</string>
     <string name="workflow_time_label">Ora</string>

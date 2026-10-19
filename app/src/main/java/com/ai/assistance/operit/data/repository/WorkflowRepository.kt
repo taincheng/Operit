@@ -757,26 +757,28 @@ class WorkflowRepository(private val context: Context) {
     
     /**
      * Schedule a workflow
+     *
+     * 挂起：continuous 的种链要先查 WorkManager 里的槽位状态。这里不再用 runBlocking，
+     * 否则从界面线程调用会把主线程阻塞在 WorkManager 的查询上。
      */
-    fun scheduleWorkflow(id: String): Boolean {
-        return try {
-            val workflowResult = kotlinx.coroutines.runBlocking { getWorkflowById(id) }
-            val workflow = workflowResult.getOrNull()
-            
+    suspend fun scheduleWorkflow(id: String): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val workflow = getWorkflowById(id).getOrNull()
+
             if (workflow == null) {
                 AppLogger.w(TAG, "Workflow not found for scheduling: $id")
-                return false
+                return@withContext false
             }
-            
+
             if (!workflow.enabled) {
                 AppLogger.d(TAG, "Workflow is disabled, not scheduling: $id")
-                return false
+                return@withContext false
             }
 
             if (!hasScheduleTrigger(workflow)) {
-                return false
+                return@withContext false
             }
-            
+
             scheduler.scheduleWorkflow(workflow)
         } catch (e: Exception) {
             AppLogger.e(TAG, "Failed to schedule workflow: $id", e)
@@ -787,21 +789,74 @@ class WorkflowRepository(private val context: Context) {
     /**
      * Unschedule a workflow
      */
-    fun unscheduleWorkflow(id: String) {
-        try {
-            scheduler.cancelWorkflow(id)
-            AppLogger.d(TAG, "Workflow unscheduled: $id")
-        } catch (e: Exception) {
-            AppLogger.e(TAG, "Failed to unschedule workflow: $id", e)
+    suspend fun unscheduleWorkflow(id: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                scheduler.cancelWorkflow(id)
+                AppLogger.d(TAG, "Workflow unscheduled: $id")
+            } catch (e: Exception) {
+                AppLogger.e(TAG, "Failed to unschedule workflow: $id", e)
+            }
         }
     }
     
     /**
      * Reschedule a workflow (cancel + schedule)
      */
-    fun rescheduleWorkflow(id: String): Boolean {
+    suspend fun rescheduleWorkflow(id: String): Boolean {
         unscheduleWorkflow(id)
         return scheduleWorkflow(id)
+    }
+
+    /**
+     * continuous 调度的下一环。由 WorkflowWorker 在上一轮真正返回之后调用。
+     *
+     * 续链前重新读一遍工作流：工作流被停用、触发节点被删掉、触发方式被改成别的类型时都不再续链，
+     * 让「关掉开关就停」不依赖调用方记得取消。
+     */
+    suspend fun scheduleNextContinuousRound(
+        workflowId: String,
+        triggerNodeId: String?,
+        currentSlot: Int
+    ): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val workflow = getWorkflowById(workflowId).getOrNull()
+                ?: return@withContext false
+
+            if (!workflow.enabled) {
+                AppLogger.d(TAG, "Workflow is disabled, continuous chain stops: $workflowId")
+                return@withContext false
+            }
+
+            val triggerNode = triggerNodeId
+                ?.let { id -> workflow.nodes.filterIsInstance<TriggerNode>().find { it.id == id } }
+            if (triggerNode == null) {
+                AppLogger.e(
+                    TAG,
+                    "Continuous chain cannot continue, trigger node not found: workflow=$workflowId node=$triggerNodeId"
+                )
+                return@withContext false
+            }
+
+            val scheduleType = triggerNode.triggerConfig[WorkflowScheduler.CONFIG_SCHEDULE_TYPE]
+            if (scheduleType != WorkflowScheduler.SCHEDULE_TYPE_CONTINUOUS) {
+                AppLogger.d(
+                    TAG,
+                    "Trigger is no longer continuous, chain stops: workflow=$workflowId type=$scheduleType"
+                )
+                return@withContext false
+            }
+
+            scheduler.scheduleNextContinuousRound(
+                workflowId = workflowId,
+                triggerNodeId = triggerNode.id,
+                currentSlot = currentSlot,
+                config = triggerNode.triggerConfig
+            )
+        } catch (e: Exception) {
+            AppLogger.e(TAG, "Failed to arm next continuous round: $workflowId", e)
+            false
+        }
     }
     
     /**

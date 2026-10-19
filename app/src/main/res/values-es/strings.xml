@@ -1548,6 +1548,7 @@
     <string name="workflow_schedule_dialog_title">Configuración de programación</string>
     <string name="workflow_schedule_type_label">Tipo de programación</string>
     <string name="workflow_schedule_type_interval">Intervalo fijo</string>
+    <string name="workflow_schedule_type_continuous">Ejecución continua</string>
     <string name="workflow_schedule_type_specific_time">Hora específica</string>
     <string name="workflow_schedule_type_cron">Expresión Cron</string>
     <string name="workflow_interval_unit_minutes">Minutos</string>
@@ -1557,6 +1558,11 @@
     <string name="workflow_interval_value_label">Intervalo</string>
     <string name="workflow_interval_unit_label">Unidad</string>
     <string name="workflow_schedule_min_interval_hint">Nota: El intervalo mínimo de WorkManager es de 15 minutos</string>
+    <string name="workflow_continuous_config_title">Configuración de ejecución continua</string>
+    <string name="workflow_continuous_min_gap_label">Intervalo mínimo (segundos)</string>
+    <string name="workflow_continuous_max_gap_label">Intervalo máximo (segundos)</string>
+    <string name="workflow_continuous_gap_hint">Cuando termina una ejecución, espera un tiempo aleatorio dentro de este rango antes de iniciar la siguiente. El intervalo se cuenta desde el momento en que terminó la ejecución anterior</string>
+    <string name="workflow_continuous_gap_invalid">Ambos intervalos deben ser números enteros positivos y el máximo no puede ser menor que el mínimo</string>
     <string name="workflow_specific_time_config_title">Configuración de hora específica</string>
     <string name="workflow_date_label">Fecha</string>
     <string name="workflow_time_label">Hora</string>

@@ -1,0 +1,57 @@
+{
+  "id": "c0ffee00-0000-4000-8000-000000000001",
+  "name": "连续调度测试A（调度链路）",
+  "description": "只验调度链路：一个只读的 list_files 节点，不碰界面、不碰采集。用来核对每轮之间的随机间隔、冷启动不重复点火、停用即停链。",
+  "nodes": [
+    {
+      "__type": "com.ai.assistance.operit.data.model.TriggerNode",
+      "id": "trigger_continuous_probe",
+      "name": "连续运行：每轮结束等 30–120 秒",
+      "description": "一轮整轮返回之后才开始计时，等完随机间隔接着跑下一轮",
+      "position": {
+        "x": 120.0,
+        "y": 120.0
+      },
+      "triggerType": "schedule",
+      "triggerConfig": {
+        "schedule_type": "continuous",
+        "min_gap_ms": "30000",
+        "max_gap_ms": "120000",
+        "enabled": "true"
+      }
+    },
+    {
+      "__type": "com.ai.assistance.operit.data.model.ExecuteNode",
+      "id": "execute_list_workflow_dir",
+      "name": "列一次工作流目录",
+      "description": "只读动作，给每轮留一条可核对的节点日志",
+      "position": {
+        "x": 760.0,
+        "y": 290.0
+      },
+      "actionType": "list_files",
+      "actionConfig": {
+        "path": {
+          "__type": "com.ai.assistance.operit.data.model.ParameterValue.StaticValue",
+          "value": "/sdcard/Download/Operit/workflow"
+        }
+      }
+    }
+  ],
+  "connections": [
+    {
+      "id": "conn_probe_trigger_to_list",
+      "sourceNodeId": "trigger_continuous_probe",
+      "targetNodeId": "execute_list_workflow_dir",
+      "condition": null
+    }
+  ],
+  "createdAt": 0,
+  "updatedAt": 0,
+  "enabled": true,
+  "lastExecutionTime": null,
+  "lastExecutionStatus": null,
+  "totalExecutions": 0,
+  "successfulExecutions": 0,
+  "failedExecutions": 0
+}

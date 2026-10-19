@@ -13,6 +13,9 @@ import kotlinx.coroutines.launch
  * Initializes workflow scheduling when the app starts.
  * Re-schedules all enabled workflows to ensure they continue running
  * even if the app was force-stopped or updated.
+ *
+ * continuous 调度的重排是幂等的：链路还活着时种链不做任何事，因此冷启动既不会额外点火，
+ * 也不会取消正在跑的那一轮。
  */
 object WorkflowSchedulerInitializer {
     

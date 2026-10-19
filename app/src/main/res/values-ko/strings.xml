@@ -151,6 +151,7 @@
     <string name="workflow_schedule_dialog_title">일정</string>
     <string name="workflow_schedule_type_label">일정 유형</string>
     <string name="workflow_schedule_type_interval">고정 간격</string>
+    <string name="workflow_schedule_type_continuous">연속 실행</string>
     <string name="workflow_schedule_type_specific_time">특정 시간</string>
     <string name="workflow_schedule_type_cron">크론 표현</string>
     <string name="workflow_interval_unit_minutes">분</string>
@@ -160,6 +161,11 @@
     <string name="workflow_interval_value_label">간격</string>
     <string name="workflow_interval_unit_label">단위</string>
     <string name="workflow_schedule_min_interval_hint">참고: WorkManager 최소 간격은 15분입니다.</string>
+    <string name="workflow_continuous_config_title">연속 실행 설정</string>
+    <string name="workflow_continuous_min_gap_label">최소 간격(초)</string>
+    <string name="workflow_continuous_max_gap_label">최대 간격(초)</string>
+    <string name="workflow_continuous_gap_hint">한 회차가 끝난 뒤 이 범위 안에서 무작위로 기다린 다음 다음 회차를 시작합니다. 간격은 이전 회차가 끝난 시각부터 계산합니다</string>
+    <string name="workflow_continuous_gap_invalid">두 간격 모두 양의 정수여야 하며, 최대 간격은 최소 간격보다 작을 수 없습니다</string>
     <string name="workflow_specific_time_config_title">특정 시간</string>
     <string name="workflow_date_label">날짜</string>
     <string name="workflow_time_label">시간</string>

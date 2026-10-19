@@ -56,6 +56,19 @@ Tools.Workflow
 - 提取节点：`source`、`mode`、`expression`、`group`、`defaultValue` 等
 - 逻辑节点：通过 `type: 'logic'` 与操作符表达
 
+> 执行节点里的 `jsCode` 目前只是宿主保留字段：工作流执行器只读 `actionType`，不会执行它（见 `core/workflow/WorkflowExecutor.kt`）。只填 `jsCode` 而不填 `actionType` 的节点，运行时会失败并记 `节点没有配置 actionType`。要真的跑一段脚本，请把它包成工具再在节点里用 `actionType` 调用。
+
+`triggerType: 'schedule'` 的 `triggerConfig` 是一个字符串键值表，`schedule_type` 取以下值之一：
+
+| `schedule_type` | 需要的键 | 行为 |
+| --- | --- | --- |
+| `interval` | `interval_ms`、`repeat` | 固定间隔，受 WorkManager 限制最小 15 分钟 |
+| `continuous` | `min_gap_ms`、`max_gap_ms` | 一轮工作流整轮返回之后才开始计时，等该区间内的随机时长再跑下一轮 |
+| `specific_time` | `specific_time`、`repeat` | 指定时刻执行一次 |
+| `cron` | `cron_expression`、`repeat` | 简化的 cron 表达式 |
+
+`continuous` 不读 `repeat`；`min_gap_ms` 必须大于 0 且不大于 `max_gap_ms`，否则该次调度被拒绝并在日志里报错。第一轮不等待，之后的间隔从上一轮结束时刻起算。停用、删除工作流或把 `schedule_type` 改成别的值都会让链路停止。
+
 ### `Workflow.ParameterValueInput`
 
 输入值既可以是：

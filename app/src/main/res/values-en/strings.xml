@@ -173,6 +173,7 @@
     <string name="workflow_schedule_dialog_title">Schedule</string>
     <string name="workflow_schedule_type_label">Schedule type</string>
     <string name="workflow_schedule_type_interval">Fixed interval</string>
+    <string name="workflow_schedule_type_continuous">Continuous</string>
     <string name="workflow_schedule_type_specific_time">Specific time</string>
     <string name="workflow_schedule_type_cron">Cron expression</string>
     <string name="workflow_interval_unit_minutes">Minutes</string>
@@ -182,6 +183,11 @@
     <string name="workflow_interval_value_label">Interval</string>
     <string name="workflow_interval_unit_label">Unit</string>
     <string name="workflow_schedule_min_interval_hint">Note: WorkManager minimum interval is 15 minutes</string>
+    <string name="workflow_continuous_config_title">Continuous run</string>
+    <string name="workflow_continuous_min_gap_label">Minimum gap (seconds)</string>
+    <string name="workflow_continuous_max_gap_label">Maximum gap (seconds)</string>
+    <string name="workflow_continuous_gap_hint">After a run finishes, wait a random time inside this range before starting the next run. The gap is measured from the moment the previous run ended</string>
+    <string name="workflow_continuous_gap_invalid">Both gaps must be positive whole numbers, and the maximum must not be smaller than the minimum</string>
     <string name="workflow_specific_time_config_title">Specific Time</string>
     <string name="workflow_date_label">Date</string>
     <string name="workflow_time_label">Time</string>
