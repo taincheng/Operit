@@ -6,8 +6,8 @@
         "en": "Xiaohongshu Collector"
     },
     "description": {
-        "zh": "按关键词采集小红书搜索结果的分享链接并上报。逐条进详情取链后落盘到 records.jsonl，再由 outbox 批量上报到服务端。",
-        "en": "Collect share links from Xiaohongshu search results for a keyword and upload them. Each link is appended to records.jsonl, and the outbox uploads them in batches."
+        "zh": "按关键词采集小红书搜索结果的分享链接与点赞/评论/收藏三个计数并上报。逐条进详情取链后落盘到 records.jsonl，再由 outbox 批量上报到服务端；重复遇到同一篇笔记时刷新计数。",
+        "en": "Collect share links plus like/comment/collect counts from Xiaohongshu search results for a keyword and upload them. Each record is appended to records.jsonl and uploaded by the outbox; re-encountering the same note refreshes its counts."
     },
     "enabledByDefault": true,
     "category": "Automatic",
@@ -15,16 +15,16 @@
         {
             "name": "xhs_collect_share_link",
             "description": {
-                "zh": "取出当前打开的笔记的分享链接与真实笔记ID（content_id）。流程是按页型点分享入口、点面板里的「复制链接」，再从评论输入框回读剪贴板内容并清空。必须停在笔记详情页调用，它不会自己导航。",
-                "en": "Extract the share link of the note currently open on its detail page: open the share sheet according to the page type, tap the copy-link item, then paste the clipboard into the comment field, read it back and clear it. Must be called on a note detail page; it does not navigate."
+                "zh": "取出当前打开的笔记的分享链接、真实笔记ID（content_id）与点赞/评论/收藏三个计数。流程是按页型点分享入口、点面板里的「复制链接」，再从评论输入框回读剪贴板内容并清空；三个计数与 content_id 来自同一个分享页里的 interactInfo。必须停在笔记详情页调用，它不会自己导航。",
+                "en": "Extract the share link, stable note id (content_id) and the like/comment/collect counts of the note currently open on its detail page: open the share sheet according to the page type, tap the copy-link item, then paste the clipboard into the comment field, read it back and clear it. The note id and the three counts come from the interactInfo block of the same share page. Must be called on a note detail page; it does not navigate."
             },
             "parameters": []
         },
         {
             "name": "xhs_collect_share_links",
             "description": {
-                "zh": "采集小红书搜索结果的分享链接，一次运行只做一片。每条记录带真实笔记ID（content_id，从短链跳转后的分享页解析 noteId），三个采集包统一用它当身份，服务端按 (source, content_id) 认同一篇笔记。用 deep link 打开搜索结果页，读一屏可见的笔记卡片，逐张点进去取链再返回列表，采完一屏往下滚一屏。之所以每条都要回列表，是因为视频笔记详情页下滑进入的是推荐流而不是搜索结果（实测在 142 条结果里找不到下滑到的那条），不能像抖音那样在详情页内把一页取完。商家/广告笔记的底栏是咨询入口、没有评论输入框，分享链接读不出来，这类页面整条跳过并继续下一张；其他版式意外对不上的卡片同样跳过该卡继续下一张，但连着 5 张都采不动就中断本片。每条记录立即追加到 records.jsonl 并建 pending 的 outbox 记录，已在库里的短链跳过。按条数目标或时间上限先到者结束本片，结果集翻到底也会结束，结束原因写进 progress.json。每条记录带 keyword_in_title 与 promo_hint 两个标记（标题是否含关键词、卡片是否有推广角标），只标记不过滤，是否丢弃交由服务端决定。",
-                "en": "Collect share links from Xiaohongshu search results, one chunk per run. Every record carries the stable note id (noteId parsed from the share page the short link redirects to), the identity all three collectors share. Opens the result page through a deep link, reads the visible note cards, opens each one to take its link and returns to the list, then scrolls one screen when the visible cards are done. Returning to the list for every note is required because swiping down inside a video note detail page rolls into recommendations rather than the next search result (the swiped-to note was absent from a scan of 142 result titles), so the Douyin approach of finishing a page inside the detail view does not apply. Merchant/ad notes carry a consult button instead of the comment input, so their share link cannot be read back; those pages are skipped entirely and the run moves on to the next card. Cards whose layout does not match are skipped the same way, but five unusable cards in a row abort the chunk. Every record is appended to records.jsonl with a pending outbox entry; links already stored are skipped. The chunk ends on the item target, the time limit, or an exhausted result list, and the reason is written to progress.json. Every record carries keyword_in_title and promo_hint markers (whether the title mentions the keyword, whether the card carries a promo badge); they are markers only, so the server decides what to drop."
+                "zh": "采集小红书搜索结果的分享链接，一次运行只做一片。每条记录带真实笔记ID（content_id，从短链跳转后的分享页解析 noteId），三个采集包统一用它当身份，服务端按 (source, content_id) 认同一篇笔记。用 deep link 打开搜索结果页，读一屏可见的笔记卡片，逐张点进去取链再返回列表，采完一屏往下滚一屏。之所以每条都要回列表，是因为视频笔记详情页下滑进入的是推荐流而不是搜索结果（实测在 142 条结果里找不到下滑到的那条），不能像抖音那样在详情页内把一页取完。商家/广告笔记的底栏是咨询入口、没有评论输入框，分享链接读不出来，这类页面整条跳过并继续下一张；其他版式意外对不上的卡片同样跳过该卡继续下一张，但连着 5 张都采不动就中断本片。每条记录立即追加到 records.jsonl 并建 pending 的 outbox 记录；已在库里的笔记按 (source, content_id) 认出后就地更新点赞/评论/收藏三个计数并重新置为 pending，不新增行。三个计数取自短链跳转后的分享页 interactInfo（likedCount / commentCount / collectedCount），与解析 content_id 共用同一次请求。按条数目标或时间上限先到者结束本片，结果集翻到底也会结束，结束原因写进 progress.json。每条记录带 keyword_in_title 与 promo_hint 两个标记（标题是否含关键词、卡片是否有推广角标），只标记不过滤，是否丢弃交由服务端决定。",
+                "en": "Collect share links from Xiaohongshu search results, one chunk per run. Every record carries the stable note id (noteId parsed from the share page the short link redirects to), the identity all three collectors share. Opens the result page through a deep link, reads the visible note cards, opens each one to take its link and returns to the list, then scrolls one screen when the visible cards are done. Returning to the list for every note is required because swiping down inside a video note detail page rolls into recommendations rather than the next search result (the swiped-to note was absent from a scan of 142 result titles), so the Douyin approach of finishing a page inside the detail view does not apply. Merchant/ad notes carry a consult button instead of the comment input, so their share link cannot be read back; those pages are skipped entirely and the run moves on to the next card. Cards whose layout does not match are skipped the same way, but five unusable cards in a row abort the chunk. Every record is appended to records.jsonl with a pending outbox entry; a note already stored is recognised by (source, content_id) and its like/comment/collect counts are updated in place and re-queued as pending instead of inserting a second row. The three counts come from the interactInfo block (likedCount / commentCount / collectedCount) of the same share-page request that yields the note id. The chunk ends on the item target, the time limit, or an exhausted result list, and the reason is written to progress.json. Every record carries keyword_in_title and promo_hint markers (whether the title mentions the keyword, whether the card carries a promo badge); they are markers only, so the server decides what to drop."
             },
             "parameters": [
                 {
@@ -183,6 +183,37 @@ const XHS_SHARE_URL_PATTERN = /https?:\/\/xhslink\.(?:cn|com)\/[A-Za-z0-9_\-/]+/
 // 小红书的短码实测是稳定的（321 条历史记录只重复 1 条），但契约要求三个平台统一用
 // content_id 当身份，所以这里也解析一次，服务端按 (source, content_id) 认同一篇笔记。
 const XHS_CONTENT_ID_PATTERN = /"noteId"\s*:\s*"([0-9a-fA-F]{16,32})"/;
+
+// 互动计数与 noteId 在同一份分享页里：服务端渲染的 interactInfo 块。
+//
+// 2026-10-20 用采集器同款 UA 与 Accept-Language: zh-CN 抓了仓库里 11 条真实短链
+// （4 条图文 + 7 条视频），11/11 都带 interactInfo，字段是：
+//   likedCount / collectedCount / commentCount
+// 值有两种写法：纯数字（"1387"、"2597"），或中文缩写（"10万+"、"6.9万"、"1.2万"）。
+// 空串实测出现过（某条 commentCount=""），同页 commentData.commentCount 为 0，
+// 所以空串是页面给 0 的写法，不是缺失。
+//
+// 「10万+」是页面的封顶写法，真实值拿不到，只能按下限折成 100000；这与抖音的
+// 「41.4万」是同一类有损缩写，原始字符串照样写进 interaction_text 供回查。
+// 不为此另发请求：这份 HTML 就是解析 noteId 的那一次请求的响应。
+const XHS_INTERACT_INFO_PATTERN = /"interactInfo"\s*:\s*\{([^{}]*)\}/;
+// 计数文本：数字可带小数与千分位逗号，后缀万/亿/K/M，封顶写法带一个加号。
+const COUNT_TEXT_PATTERN = /^(\d+(?:\.\d+)?)(万|亿|[KkMm])?\+?$/;
+
+/** 一次分享页取链顺带读到的三个计数。数值是按页面文本折算后的整数。 */
+type SharePageCounts = {
+    like: number;
+    comment: number;
+    collect: number;
+    // 三项原始文本，例如 likedCount=10万+,collectedCount=6.9万,commentCount=2597
+    text: string;
+};
+
+/** 分享页解析结果：稳定身份与三个计数来自同一次请求。 */
+type SharePageIdentity = {
+    contentId: string;
+    counts: SharePageCounts;
+};
 
 // 分享页对非浏览器 UA 会返回不同的内容，用移动端 Safari 的 UA 实测能拿到含 noteId 的整页。
 const SHARE_PAGE_USER_AGENT =
@@ -784,7 +815,15 @@ async function clearCommentInput(): Promise<void> {
  */
 type DetailExtractOutcome =
     | { skipped: true; pageType: "ad"; author: string }
-    | { skipped: false; pageType: "note" | "video"; author: string; url: string; shareText: string; contentId: string };
+    | {
+          skipped: false;
+          pageType: "note" | "video";
+          author: string;
+          url: string;
+          shareText: string;
+          contentId: string;
+          counts: SharePageCounts;
+      };
 
 /**
  * 在当前笔记详情页取一次分享链接。
@@ -826,11 +865,14 @@ async function extractShareOnDetailPage(screenHeight: number): Promise<DetailExt
     await Tools.System.sleep(SHARE_PANEL_CLOSE_SETTLE_MS);
 
     const { url, shareText } = await pasteAndReadShareText(pageType, screenHeight);
-    // 短码实测稳定，但契约要求三个包统一用平台真实 id 当身份，这里跟着解析一次。
-    // 这一步只发一个 HTTP 请求，不依赖界面，评论输入框此时也已经清空。
-    const contentId = await resolveContentId(url);
-    console.log(`笔记身份解析成功：${url} -> content_id=${contentId}`);
-    return { skipped: false, pageType, author, url, shareText, contentId };
+    // 短码实测稳定，但契约要求三个包统一用平台真实 id 当身份，这里跟着解析一次；
+    // 同一份分享页的 interactInfo 里带三个计数，所以不额外发请求。
+    // 这一步不依赖界面，评论输入框此时也已经清空。
+    const { contentId, counts } = await resolveSharePage(url);
+    console.log(
+        `笔记身份与计数解析成功：${url} -> content_id=${contentId}，赞 ${counts.like}、评 ${counts.comment}、藏 ${counts.collect}（${counts.text}）`
+    );
+    return { skipped: false, pageType, author, url, shareText, contentId, counts };
 }
 
 type XhsCollectShareLinkResult = {
@@ -838,6 +880,10 @@ type XhsCollectShareLinkResult = {
     url: string;
     shareText: string;
     contentId: string;
+    likeCount: number;
+    commentCount: number;
+    collectCount: number;
+    interactionText: string;
 };
 
 async function xhs_collect_share_link(): Promise<XhsCollectShareLinkResult> {
@@ -857,6 +903,10 @@ async function xhs_collect_share_link(): Promise<XhsCollectShareLinkResult> {
         url: outcome.url,
         shareText: outcome.shareText,
         contentId: outcome.contentId,
+        likeCount: outcome.counts.like,
+        commentCount: outcome.counts.comment,
+        collectCount: outcome.counts.collect,
+        interactionText: outcome.counts.text,
     };
 }
 
@@ -871,6 +921,9 @@ type XhsCollectShareLinksResult = {
     keyword: string;
     requested: number;
     collected: string[];
+    // 再次遇到已入库的笔记时，就地刷新了计数的条数（不新增行）
+    updated: number;
+    // 命中库里已有笔记的条数，其中 updated 条已就地刷新了计数
     skippedDuplicates: number;
     // 广告/咨询页：按用户决定整条跳过，不计入采集，也不当作失败
     skippedAds: number;
@@ -941,13 +994,23 @@ type CollectedRecord = {
     author: string;
     collected_at: string;
     source: string;
-    // 笔记在该平台上的真实身份，见 resolveContentId。本地去重与服务端的「一行一内容」都认它。
+    // 笔记在该平台上的真实身份，见 resolveSharePage。本地去重与服务端的「一行一内容」都认它。
     // 0.3.0 之前写下的记录没有这个字段，它们不参与去重（历史行原样留着）。
     content_id: string;
     // 相关性与推广标记。只做标记，不据此丢弃数据：实测主题相符的笔记里只有一部分
     // 标题含关键词，硬过滤会误杀，所以判断权交给服务端。
     keyword_in_title: boolean;
     promo_hint: boolean;
+    // 三个互动计数：分享页 interactInfo 的折算值，0 是合法计数。
+    // 0.4.0 之前的记录没有这三个字段；它们不会主动重取，等再次采到同一篇时就地更新。
+    like_count: number;
+    comment_count: number;
+    collect_count: number;
+    // 三项原始文本，形如 likedCount=10万+|collectedCount=6.9万|commentCount=2597。
+    // 「万+」是页面的封顶写法，折成整数有损，留原文供回查。
+    interaction_text: string;
+    // 这三个计数是哪一刻从分享页观测到的。服务端按它做单调判断，更早的观测不许覆盖它。
+    counts_at: string;
     // 来源特有字段：图文笔记还是视频笔记。服务端契约明确要求忽略不认识的字段，
     // 所以新增字段对老服务端安全。
     note_type: "note" | "video";
@@ -1073,21 +1136,60 @@ function nowIso(): string {
 }
 
 /**
- * 分享短链归一化后的笔记标识，用于本地去重。
+ * 把分享页里的计数文本折成整数。
  *
- * 实测同一条笔记两次独立取链得到同一个短链（https://xhslink.cn/o/85Lns6HOD4i），
- * 所以短码可以当身份用。标题会被 App 截断，稳定性不如短链。
+ * 空串是页面给 0 的写法（证据见 XHS_INTERACT_INFO_PATTERN 的注释），其余写法必须能被
+ * COUNT_TEXT_PATTERN 完整匹配；匹配不上就抛错，不猜一个数字出来。
+ * 「10万+」只能折成下限 100000，真实值页面上没有。
  */
+function parseCountText(raw: string, field: string): number {
+    const normalized = raw.replace(/[,，\s]/g, "");
+    if (normalized === "") {
+        return 0;
+    }
+    const matched = normalized.match(COUNT_TEXT_PATTERN);
+    if (!matched) {
+        throw new Error(`分享页的 ${field} 不是可解析的计数：${raw}`);
+    }
+    const value = Number(matched[1]);
+    const unit = matched[2];
+    if (unit === "万") {
+        return Math.round(value * 10000);
+    }
+    if (unit === "亿") {
+        return Math.round(value * 100000000);
+    }
+    if (unit === "K" || unit === "k") {
+        return Math.round(value * 1000);
+    }
+    if (unit === "M" || unit === "m") {
+        return Math.round(value * 1000000);
+    }
+    return Math.round(value);
+}
+
+/** 取 interactInfo 块里的一个计数字段。字段缺失说明页面结构变了，直接抛错。 */
+function readInteractCount(block: string, field: string): string {
+    const matched = block.match(new RegExp(`"${field}"\\s*:\\s*"([^"]*)"`));
+    if (!matched) {
+        throw new Error(
+            `分享页的 interactInfo 里没有 ${field}（页面可能改版或被风控）：${block.slice(0, 120)}`
+        );
+    }
+    return matched[1];
+}
+
 /**
- * 从分享短链解析出稳定的笔记身份 content_id。
+ * 从分享短链解析出稳定的笔记身份 content_id 与三个互动计数。
  *
- * 短码（xhslink.cn/o/<短码>）实测是稳定的，但契约要求三个采集包统一用平台真实 id 当身份，
- * 服务端也按 (source, content_id) 认同一篇笔记，所以这里跟着解析。
- * 稳定身份在跳转后的分享页里：\"noteId\":\"6a263ade0000000022024db0\"。
+ * 身份在跳转后的分享页里：\"noteId\":\"6a263ade0000000022024db0\"；
+ * 计数在同一页的 interactInfo 里，见 XHS_INTERACT_INFO_PATTERN 的实测说明。
+ * 两者共用这一次请求，不额外发 HTTP。
  *
- * 解析失败直接抛错，不退回用短码：身份来源必须三个平台一致，否则服务端的判重会时灵时不灵。
+ * 解析失败直接抛错，不退回用短码、也不写 null 计数：身份与计数都必须来自这一份页面，
+ * 缺了就说明页面被改版或风控，继续写只会把不确定的数据混进库。
  */
-async function resolveContentId(shareUrl: string): Promise<string> {
+async function resolveSharePage(shareUrl: string): Promise<SharePageIdentity> {
     const response = await Tools.Net.http({
         url: shareUrl,
         method: "GET",
@@ -1104,13 +1206,34 @@ async function resolveContentId(shareUrl: string): Promise<string> {
         throw new Error(`解析笔记身份失败：${shareUrl} 返回 HTTP ${response.statusCode}`);
     }
 
-    const matched = String(response.content ?? "").match(XHS_CONTENT_ID_PATTERN);
-    if (!matched) {
+    const html = String(response.content ?? "");
+    const contentMatched = html.match(XHS_CONTENT_ID_PATTERN);
+    if (!contentMatched) {
         throw new Error(
             `解析笔记身份失败：${shareUrl} 的分享页里没有 noteId（页面可能改版或被风控）`
         );
     }
-    return matched[1];
+
+    const interactMatched = html.match(XHS_INTERACT_INFO_PATTERN);
+    if (!interactMatched) {
+        throw new Error(
+            `解析互动计数失败：${shareUrl} 的分享页里没有 interactInfo（页面可能改版或被风控）`
+        );
+    }
+
+    const block = interactMatched[1];
+    const likeRaw = readInteractCount(block, "likedCount");
+    const collectRaw = readInteractCount(block, "collectedCount");
+    const commentRaw = readInteractCount(block, "commentCount");
+    return {
+        contentId: contentMatched[1],
+        counts: {
+            like: parseCountText(likeRaw, "likedCount"),
+            comment: parseCountText(commentRaw, "commentCount"),
+            collect: parseCountText(collectRaw, "collectedCount"),
+            text: `likedCount=${likeRaw}|collectedCount=${collectRaw}|commentCount=${commentRaw}`,
+        },
+    };
 }
 
 async function readTextFile(path: string): Promise<string> {
@@ -1189,11 +1312,70 @@ async function appendRecord(outbox: OutboxFileData, record: CollectedRecord): Pr
     markOutbox(outbox, record.idempotency_key, "pending", "");
 }
 
+/**
+ * 整份重写 records.jsonl。
+ *
+ * 再次遇到同一篇笔记时要把那一行的计数就地改掉，而追加式写入改不了旧行。
+ * 先写同目录的临时文件再 move 覆盖：直接覆盖会留下半截文件，而 loadRecords
+ * 遇到坏行是直接抛错的，整个采集会瘫掉。宿主的 move 在 Android 上走
+ * File.renameTo，同目录下是原子替换。
+ *
+ * 为什么每条更新都重写整份文件：更新后的行随时可能因为脚本被杀而丢失，
+ * 文件量级是几百到几千行，重写的代价可以忽略。
+ */
+async function saveRecords(records: CollectedRecord[]): Promise<void> {
+    const content = records.map((record) => `${JSON.stringify(record)}\n`).join("");
+    const tempFile = `${RECORDS_FILE}.rewrite`;
+    const written = await Tools.Files.write(tempFile, content, false, "android");
+    if (!written.successful) {
+        throw new Error(`写临时记录文件失败：${written.details || "(没有细节)"}`);
+    }
+    const moved = await Tools.Files.move(tempFile, RECORDS_FILE, "android");
+    // move 失败时目标文件还是旧内容（不是半截），但这次更新会丢，必须如实报错而不是继续
+    if (!moved.successful) {
+        throw new Error(`替换采集记录文件失败：${moved.details || "(没有细节)"}`);
+    }
+}
+
+/**
+ * 把一次新观测到的计数写回库里那一行。
+ *
+ * collected_at 保持不变（那是首次采集时间），只换 counts_at；
+ * idempotency_key 必须换新：服务端按 (device, idempotency_key) 去重，
+ * 沿用旧键会被判成「已入库」而完全不更新，换键之后才走「同一内容的新观测」。
+ * 旧键对应的 outbox 条目随这一行被覆盖而作废，一并删掉，别让它长成孤儿。
+ *
+ * content_id 为空只发生在 0.3.0 之前的记录上；这一次解析出了身份就一并补上。
+ */
+async function updateRecordCounts(
+    outbox: OutboxFileData,
+    records: CollectedRecord[],
+    index: number,
+    identity: SharePageIdentity
+): Promise<void> {
+    const target = records[index];
+    const previousKey = target.idempotency_key;
+    target.like_count = identity.counts.like;
+    target.comment_count = identity.counts.comment;
+    target.collect_count = identity.counts.collect;
+    target.interaction_text = identity.counts.text;
+    target.counts_at = nowIso();
+    if (!target.content_id) {
+        target.content_id = identity.contentId;
+    }
+    target.idempotency_key = randomId();
+    delete outbox.entries[previousKey];
+    await saveRecords(records);
+    markOutbox(outbox, target.idempotency_key, "pending", "");
+    await saveOutbox(outbox);
+}
+
 // ===== 分片与断点续跑 =====
 //
 // 脚本硬超时 30 分钟且没有协作式检查点，所以一次运行只做一片：
 // 按条数目标或时间上限先到者结束，结束时写 progress.json。
-// 下一片由工作流定时点火，靠 records.jsonl 里的短链短码去重，不会重复采集已完成的条目。
+// 下一片由工作流定时点火，靠 records.jsonl 里的 content_id 去重，不会重复采集已完成的条目；
+// 再次遇到同一篇笔记时会把那一行的三个计数刷新成这次观测到的值。
 //
 // 断点记录的是进度与轮次，不是列表位置：搜索首屏结果会浮动，
 // 按位置续跑不可靠，去重才是可靠的续跑依据。
@@ -1683,14 +1865,15 @@ async function xhs_collect_share_links(
     const screenHeight = await readScreenHeight();
 
     const outbox = await loadOutbox();
-    const storedRecords = await loadRecords();
-    // 本地去重按分享短链的短码，跨轮次生效。实测同一条笔记两次独立取链得到同一个短链。
+    const records = await loadRecords();
     // 本地去重按笔记真实身份 content_id，跨轮次生效。
     // 0.3.0 之前写下的记录没有 content_id，跳过它们：拿不到身份就不猜（硬猜会串笔记）。
-    const storedContentIds: Record<string, boolean> = Object.create(null);
-    for (const record of storedRecords) {
-        if (record.content_id) {
-            storedContentIds[record.content_id] = true;
+    // 同一个 content_id 在历史里若出现多行（旧版本中间态），以最后一行为更新目标。
+    const recordIndexByContentId: Record<string, number> = Object.create(null);
+    for (let index = 0; index < records.length; index += 1) {
+        const storedContentId = records[index].content_id;
+        if (storedContentId) {
+            recordIndexByContentId[storedContentId] = index;
         }
     }
 
@@ -1699,6 +1882,7 @@ async function xhs_collect_share_links(
     const collected: string[] = [];
     // 已处理过的卡片身份键。列表首屏会浮动，按位置续跑不可靠，认卡片本身。
     const seenCardKeys: Record<string, boolean> = Object.create(null);
+    let updated = 0;
     let skippedDuplicates = 0;
     let skippedAds = 0;
     let skippedUnusable = 0;
@@ -1800,13 +1984,21 @@ async function xhs_collect_share_links(
         }
 
         const contentId = outcome.contentId;
-        if (storedContentIds[contentId]) {
+        const existingIndex = recordIndexByContentId[contentId];
+        if (existingIndex !== undefined) {
+            // 已入库的同一篇笔记：就地刷新三个计数，不新增行。
+            // 这一步必须发生在写 records 之前，重复遇到不再是「跳过」，而是更新观测。
+            await updateRecordCounts(outbox, records, existingIndex, outcome);
+            updated += 1;
             skippedDuplicates += 1;
             consecutiveSkips += 1;
-            console.log(`已在库里，跳过：${outcome.url}（content_id=${contentId}）`);
+            console.log(
+                `已在库里，更新计数：${outcome.url}（content_id=${contentId}，赞 ${outcome.counts.like}、评 ${outcome.counts.comment}、藏 ${outcome.counts.collect}）`
+            );
             continue;
         }
 
+        const countsAt = nowIso();
         const record: CollectedRecord = {
             idempotency_key: randomId(),
             keyword,
@@ -1814,17 +2006,24 @@ async function xhs_collect_share_links(
             share_text: outcome.shareText,
             title: cardTitle,
             author: outcome.author,
-            collected_at: nowIso(),
+            // collected_at 是首次采集时间；三个计数属于哪一刻由 counts_at 单独记
+            collected_at: countsAt,
             source: RECORD_SOURCE,
             content_id: contentId,
             keyword_in_title: cardTitle.includes(keyword),
             promo_hint: promoHint,
+            like_count: outcome.counts.like,
+            comment_count: outcome.counts.comment,
+            collect_count: outcome.counts.collect,
+            interaction_text: outcome.counts.text,
+            counts_at: countsAt,
             note_type: outcome.pageType,
         };
         // 每条立即落盘并建 pending 的 outbox 记录，中途被杀也不会丢
         await appendRecord(outbox, record);
         await saveOutbox(outbox);
-        storedContentIds[contentId] = true;
+        records.push(record);
+        recordIndexByContentId[contentId] = records.length - 1;
         consecutiveSkips = 0;
 
         collected.push(outcome.url);
@@ -1833,12 +2032,15 @@ async function xhs_collect_share_links(
         progress.last_item_id = contentId;
         await saveProgress(progress);
 
-        console.log(`已采集第 ${collected.length} 条：${outcome.url}（content_id=${contentId}）`);
+        console.log(
+            `已采集第 ${collected.length} 条：${outcome.url}（content_id=${contentId}，赞 ${outcome.counts.like}、评 ${outcome.counts.comment}、藏 ${outcome.counts.collect}）`
+        );
         // 让界面能看到分片进展，长任务不至于看起来像卡住
         sendIntermediateResult({
             keyword,
             chunkIndex: progress.chunk_index,
             collectedInChunk: collected.length,
+            updatedInChunk: updated,
             chunkTarget: count,
             collectedTotal: progress.collected_total,
             url: outcome.url,
@@ -1855,6 +2057,7 @@ async function xhs_collect_share_links(
         keyword,
         requested: count,
         collected,
+        updated,
         skippedDuplicates,
         skippedAds,
         skippedUnusable,
@@ -1866,7 +2069,7 @@ async function xhs_collect_share_links(
         progressFile: PROGRESS_FILE,
     };
     console.log(
-        `本片结束（${STOP_REASON_TEXT[stopReason]}）：新增 ${collected.length} 条，跳过广告页 ${skippedAds} 条、采不动的卡片 ${skippedUnusable} 条，本轮累计 ${progress.collected_total} 条`
+        `本片结束（${STOP_REASON_TEXT[stopReason]}）：新增 ${collected.length} 条、更新计数 ${updated} 条，跳过广告页 ${skippedAds} 条、采不动的卡片 ${skippedUnusable} 条，本轮累计 ${progress.collected_total} 条`
     );
 
     return payload;

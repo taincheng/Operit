@@ -42,12 +42,12 @@ my-packages/
 | `douyin_upload_config_check` | 自检上报地址与令牌是否可用，不会写入任何数据 |
 | `douyin_migrate_upload_config` | 把早期版本的 `DOUYIN_` 前缀旧键搬到中立键并清空旧键。设置页加载时自动调用，幂等 |
 
-`xhs-collector` 提供同构的 6 个工具，前缀换成 `xhs_`。
+`xhs-collector` 提供 6 个工具，前缀换成 `xhs_`。
 
 | 工具 | 作用 |
 | --- | --- |
-| `xhs_collect_share_link` | 取出当前打开的笔记的分享链接，需要在笔记详情页调用，不会自己导航 |
-| `xhs_collect_share_links` | 采集搜索结果：读一屏可见的笔记卡片，逐张点进详情取链再返回列表，采完一屏往下滚一屏 |
+| `xhs_collect_share_link` | 取出当前打开的笔记的分享链接、content_id 与点赞/评论/收藏三个计数，需要在笔记详情页调用，不会自己导航 |
+| `xhs_collect_share_links` | 采集搜索结果：读一屏可见的笔记卡片，逐张点进详情取链、解析计数再返回列表，采完一屏往下滚一屏；同一篇笔记再次遇到时刷新那一行的计数 |
 | `xhs_outbox_flush` | 同抖音 |
 | `xhs_outbox_status` | 同抖音 |
 | `xhs_upload_config_check` | 同抖音 |
@@ -75,8 +75,20 @@ my-packages/
 抖音 0.5.0、快手 0.3.0、小红书 0.3.0 起，每一行都带 `content_id`（内容在该平台上的真实身份，见下）。
 抖音包另外还带三个互动计数（`like_count` / `comment_count` / `collect_count`，页面没显示时为 `null`，与 0 不同）、
 计数是哪一刻观测到的 `counts_at`，以及命中的互动条原文 `interaction_text`。
-`collected_at` 是**首次**采到这个视频的时间，更新计数时不变。
-小红书与快手包暂时没有这三个字段（没有需求），记录结构与 outbox 机制与抖音相同。
+`collected_at` 是**首次**采到这个内容的时间，更新计数时不变。
+
+小红书包从 **0.4.0** 起也带这三个计数与 `counts_at` / `interaction_text`，但来源与抖音不同：
+计数取自解析 `content_id` 的那一次分享页请求里的 `interactInfo`（`likedCount` / `collectedCount` / `commentCount`），
+不依赖详情页 UI，也不额外发请求。两点数据口径要注意：
+
+- 页面在计数 ≥ 10 万时只写「10万+」，折算成整数只能当下限（100000）；`interaction_text` 保留原文。
+- 页面用空串表示 0（实测某条 `commentCount=""`，同页 `commentData.commentCount` 为 0），所以空串写成 0，不是 `null`。
+
+0.4.0 之前的记录没有计数字段。它们**不会被主动重取**，与抖音一致：等正常采集再次遇到同一篇笔记时，
+就地补上三个计数并重新置为 pending，服务端按 `(source, content_id)` 更新同一行（老行没有 `content_id` 时
+靠短链的 `video_id` 唯一键认出来）。不做一次性批量回填。
+
+快手包暂时没有这三个字段（没有需求），记录结构与 outbox 机制与抖音相同。
 
 ## 三个 driver 的关键差异
 
@@ -135,7 +147,7 @@ my-packages/
 抖音包从 **0.3.0** 起，命中库里已有的视频**不再跳过**：重新取一次链与三个计数，就地更新那一行（`counts_at` 换成这次的时间，`idempotency_key` 换新，`collected_at` 不动），服务端按视频身份更新同一行。
 只有**本片内已经处理过**的视频才跳过（翻页重叠时会遇到），`skippedDuplicates` 统计的是这一种。
 跳过会造成「连续 10 条都处理过」时结束本片，结束原因是 `duplicates`。
-小红书与快手包仍旧是「库里已有就跳过」。
+小红书包从 **0.4.0** 起与抖音一致：再次遇到同一篇笔记就地更新计数（`updated` 统计更新条数）；快手包仍旧是「库里已有就跳过」。
 
 运行期间要保持应用在前台、屏幕常亮。仓库没有锁屏与息屏下的注入处理，息屏后能否继续操作没有代码保障，不要假设可以息屏无人值守。
 
