@@ -88,7 +88,10 @@ resolve_app_package() {
     fi
 
     EXECUTE_JS_ACTION="com.ai.assistance.operit.EXECUTE_JS"
-    SCRIPT_EXECUTION_RECEIVER="${APP_PACKAGE}/.core.tools.javascript.ScriptExecutionReceiver"
+    # 调试包的 applicationId 带 .debug 后缀，但 receiver 类名按 manifest package
+    # （com.ai.assistance.operit）注册：拼 ".core.tools..." 会得到 ...debug.core.tools...，
+    # 匹配不到 receiver，广播静默成功、脚本不执行。2026-10-30 真机确认。
+    SCRIPT_EXECUTION_RECEIVER="${APP_PACKAGE}/com.ai.assistance.operit.core.tools.javascript.ScriptExecutionReceiver"
     echo "Using Operit application package: $APP_PACKAGE"
 }
 

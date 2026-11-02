@@ -306,9 +306,13 @@ def install_toolpkg(
     reset_subpackage_states: bool,
     log_wait_seconds: int,
 ) -> None:
-    action_debug_install_toolpkg = f"{app_package}.DEBUG_INSTALL_TOOLPKG"
+    # 调试包的 applicationId 带 .debug 后缀，但 AndroidManifest 里的 receiver 类名与 action
+    # 都按 base package（com.ai.assistance.operit）注册：用 applicationId 拼 ".core.tools..."
+    # 会得到 com.ai.assistance.operit.debug.core.tools...，匹配不到任何 receiver，
+    # 广播看起来成功但包根本没装上。2026-10-30 真机（Operit 1.12.2 debug）确认。
+    action_debug_install_toolpkg = "com.ai.assistance.operit.DEBUG_INSTALL_TOOLPKG"
     receiver_component = (
-        f"{app_package}/.core.tools.packTool.ToolPkgDebugInstallReceiver"
+        f"{app_package}/com.ai.assistance.operit.core.tools.packTool.ToolPkgDebugInstallReceiver"
     )
     remote_packages_dir = f"/sdcard/Android/data/{app_package}/files/packages"
     remote_file = f"{remote_packages_dir}/{safe_remote_file_name(source.package_id)}"

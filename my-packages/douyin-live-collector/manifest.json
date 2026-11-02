@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "toolpkg_id": "com.taincheng.douyin_live_collector_bundle",
+  "version": "0.2.0",
+  "api_version": "1.0.0",
+  "main": "dist/main.js",
+  "display_name": {
+    "zh": "抖音直播采集",
+    "en": "Douyin Live Collector"
+  },
+  "description": {
+    "zh": "按关键词采集抖音「直播」标签下的直播间：进房、走分享流程取短链、解析稳定的 room_id 与主播抖音号（author_id），落盘到 records.jsonl 后批量上报。再次采到同一个直播间时，用这次观测到的本场点赞/在线观众就地更新那一行，缺抖音号的老记录会补上；页面没显示的计数保持原值。支持分片与断点续跑，附带一个连续采集与上报的工作流模板。",
+    "en": "Collect Douyin live rooms from the Live tab for a keyword: enter each room, take its share link, resolve the stable room_id and the host's Douyin ID (author_id), append it to records.jsonl and upload it to your server. Re-collecting a room updates that row's live like and viewer counts when they are observed and fills author_id on older rows that lack it, with counts the page did not show kept as-is. Supports chunked resumable runs and ships a continuous collect-and-upload workflow template."
+  },
+  "enabled_by_default": true,
+  "subpackages": [
+    {
+      "id": "douyin_live_collector",
+      "entry": "dist/packages/douyin_live_collector.js"
+    }
+  ],
+  "resources": [
+    {
+      "key": "douyin_live_workflow_collect_and_upload",
+      "path": "resources/workflow_collect_and_upload.json",
+      "mime": "application/json"
+    }
+  ],
+  "workflow_templates": [
+    {
+      "id": "douyin_live_scheduled_collect_and_upload",
+      "display_name": {
+        "zh": "连续采集抖音直播并上报",
+        "en": "Continuous Douyin Live Collect and Upload"
+      },
+      "description": {
+        "zh": "一轮采一片直播间的分享链接并上报，整轮结束后随机等 30–120 秒接着跑下一轮。导入后可以改关键词、直播间数与间隔。",
+        "en": "Each round collects one chunk of live-room share links and uploads it, then waits a random 30–120 seconds before the next round. Edit the keyword, room count and gap after importing."
+      },
+      "resource_key": "douyin_live_workflow_collect_and_upload"
+    }
+  ]
+}

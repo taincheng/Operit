@@ -21,11 +21,12 @@ my-packages/
 │   │   ├── packages/   子包，每个文件用 METADATA 块声明工具
 │   │   └── ui/         设置页（compose_dsl）
 │   └── dist/           编译产物，manifest 里的入口指向这里
+├── douyin-live-collector/ 抖音直播采集，结构与抖音包同构，driver 独立
 ├── xhs-collector/        小红书采集，结构与抖音包同构
 └── kuaishou-collector/   快手采集，结构与抖音包同构（遍历方式与小红书一致）
 ```
 
-三个包都是**自包含**的：driver、记录落地、outbox 上报、分片续跑、设置页、工作流模板都在各自包里。
+四个包都是**自包含**的：driver、记录落地、outbox 上报、分片续跑、设置页、工作流模板都在各自包里。
 
 出现第三个 driver（快手）时重新评估过「要不要抽公共 kernel」，结论是**仍然不抽**：三包之间同构的只有记录/outbox/上报那一层（约 400 行），driver 部分差异很大，抽出来省不下多少；而抽 kernel 要动到两个已经在跑采集的包，代价是两次回归。理由与差异清单见 `../docs/TODO/kuaishou_collector_20261014/index.md`。
 
@@ -41,6 +42,16 @@ my-packages/
 | `douyin_outbox_status` | 查看 pending、sent、failed 各多少条 |
 | `douyin_upload_config_check` | 自检上报地址与令牌是否可用，不会写入任何数据 |
 | `douyin_migrate_upload_config` | 把早期版本的 `DOUYIN_` 前缀旧键搬到中立键并清空旧键。设置页加载时自动调用，幂等 |
+
+`douyin-live-collector` 提供 5 个工具，前缀 `douyin_live_`。
+
+| 工具 | 作用 |
+| --- | --- |
+| `douyin_live_collect_room_link` | 取出当前打开直播间的分享链接、`room_id`、主播抖音号（`author_id`）、主播名、本场点赞与在线观众，需要在直播间详情页调用，不会自己导航 |
+| `douyin_live_collect_rooms` | 采集搜索结果：切到「直播」标签，逐个进房取链并解析 `room_id` 与主播抖音号，追加到 records.jsonl。一个直播间一行；再次采到同一个 `room_id` 时就地更新本场点赞/在线观众并补 `author_id`。一次运行只做一片 |
+| `douyin_live_outbox_flush` | 把 pending 记录按每批 20 条上报到服务端，failed 不自动重发 |
+| `douyin_live_outbox_status` | 查看 pending、sent、failed 各多少条 |
+| `douyin_live_upload_config_check` | 自检上报地址与令牌是否可用，不会写入任何数据（与另外三个包共用 `COLLECTOR_BASE_URL` / `COLLECTOR_TOKEN`） |
 
 `xhs-collector` 提供 6 个工具，前缀换成 `xhs_`。
 
@@ -67,6 +78,7 @@ my-packages/
 记录、状态与进度存在插件的配置目录里：
 
 - 抖音：`/sdcard/Download/Operit/plugins/com.taincheng.douyin_collector_bundle/`
+- 抖音直播：`/sdcard/Download/Operit/plugins/com.taincheng.douyin_live_collector_bundle/`
 - 小红书：`/sdcard/Download/Operit/plugins/com.taincheng.xhs_collector_bundle/`
 - 快手：`/sdcard/Download/Operit/plugins/com.taincheng.kuaishou_collector_bundle/`
 
@@ -112,6 +124,25 @@ my-packages/
 
 快手那一侧还有一条通用坑，改任何快手 driver 都要知道：**无障碍 provider 的树会把上一页（「综合」）的节点留着，`bounds` 退化成 `x2 < x1`**。所有按 `resource-id` / `content-desc` 取节点的定位器都必须过一遍边界有效性，否则会把「已经切过去了」判成「没切过去」。
 
+## 抖音直播 driver
+
+直播与视频共用搜索入口与上报链路，但页面结构完全不同，单独一个包：
+
+| 项 | 做法 |
+| --- | --- |
+| 搜索标签 | 同 `snssdk1128://search?keyword=`；标签行左滑到「直播」可点，**点两次**（第一次常被惯性滚动吞掉） |
+| 直播列表 | 外部 `uiautomator dump` 读不到；卡片的节点形态会随抖音下发的版式变（2026-10-28 全空 text、`clickable=false`；2026-11-02 同一台机器上「直播中」角标与卡片 desc 又出现在树里，卡片容器 `clickable=true`）。不能依赖任一版式的文案：按布局找封面，**按与内容区的交集**判定可点（封面横向 ≥ 85% 屏宽且不贴左边、交集高 ≥ 30% 屏高），点交集中心。不能要求整张封面都在屏内——上滑后卡片常停在标签行下沿或被底部裁掉，那样会误判成「列表到底」 |
+| 进房 | 出现 `content-desc` 以 `本场点赞` 结尾的 Button；等 20 秒 |
+| 回列表 | 返回键后用**页面内容**确认：搜索标签行在、且房间标记不在，才算回到列表。不能读 `page.activityName`——抖音上报的是窗口根类名（直播间实测 `com.lynx.tasm.behavior.KeyboardMonitor`，搜索页实测 `androidx.compose.ui.platform.ComposeView`），拿它判断会一次返回键都不按 |
+| 分享 | 底栏「更多面板」→ 面板项按文案「分享链接」；面板高度变化，不能写坐标 |
+| 剪贴板 | 直播间评论框上限 50 字，口令里的 URL 在第 80 字后，**不能**像视频那样粘贴回读。改用 `Tools.System.shell` 调 `service call clipboard`，解 Parcel 的 UTF-16/UTF-8 文本；因此本包需要**调试器（Shizuku）**权限档，另外三个包仍只需无障碍 |
+| 身份 | 短码每次分享都变；GET 短链跟 302 到 `webcast.amemv.com/douyin/webcast/reflow/<room_id>`，取页面里的 `fromShareRoomId="<id>"` 作为 `content_id`。同一房间两次分享短码不同、`room_id` 相同。同页 owner 里的 `displayId` 就是主播抖音号，存进 `author_id`，解析锚点是紧跟其后的 `withCommercePermission` |
+| 更新 | 已入库的 `room_id` 就地更新本场点赞/在线观众并覆盖 `author_id`（老记录因此补齐）；没读到的计数保持原值，抖音号没变且计数都没读到则跳过不写。`count` 是新增 + 更新的总预算 |
+| 到底 | 列表出现「暂时没有更多了」；直播结果会随时间变化，同一关键词不同轮次看到的房间数可能不同 |
+| 上报 source | `douyin_live_app`，与视频包的 `douyin_app` 分开；hotgo 采集插件 v1.4.1 起在抖音域名下保留这个声明（此前会被域名反查覆盖成 `douyin_app`）。`content_type=live` 只是记录内辅助标记 |
+
+实测记录、设备基线与失败复盘见 `../docs/TODO/douyin_live_collector_20261027/`。
+
 ## 分片与续跑
 
 脚本硬超时 30 分钟且被杀时没有保存机会，所以一次运行只做一片：`count` 是本片的**处理目标（新增 + 更新）**，`chunk_minutes` 是本片时间上限，默认 18 分钟、最多 20 分钟，两者先到者结束本片。结束时会写 `progress.json`。
@@ -137,10 +168,14 @@ my-packages/
 | 平台 | 解析来源 | 规则 |
 | --- | --- | --- |
 | 抖音 | 跳转后页面的 `<link rel="canonical" href="https://www.douyin.com/video/<id>"/>` | 纯数字 |
+| 抖音直播 | 短链 302 后的 `webcast.amemv.com` 页面里的 `fromShareRoomId="<id>"` | 纯数字 `room_id` |
 | 快手 | 跳转后页面 JSON 的 `"photoId":"<id>"` | 数字 |
 | 小红书 | 跳转后页面 JSON 的 `"noteId":"<id>"` | 24 位十六进制 |
 
 实现方式都是 `Tools.Net.http` GET 一次分享短链（实测会自动跟随 302），多花约 1 秒。
+
+抖音直播包从 **0.2.0** 起额外带 `author_id`（主播抖音号），取自同一份分享页 owner 对象的 `displayId`，不额外发请求、不额外点页面。2026-10-30 真机：牙贝恩的 `displayId=70296714883` 与主播主页显示的抖音号一致；`王利梅口腔医院` 这类账号主页只显示「商家认证账号」、没有抖音号节点，按主页 UI 采会漏，所以只走分享页。
+
 解析失败时**如实报错、不写这条记录**，不回退用短码当身份——退回去等于继续往库里写重复行。
 解析规则的取证与可重跑断言见 `../docs/TODO/collector_content_identity_20261019/`。
 
@@ -153,7 +188,7 @@ my-packages/
 
 ## 设备前提
 
-三个采集包从 **0.2.0** 起都只需要权限档「**无障碍**」：不需要 Shizuku、不需要 root、不需要电脑。驱动里的返回键、清空输入框、屏幕高度分别走 `Tools.UI.pressKey`、`set_input_text`、`Tools.System.getDeviceInfo()`，都通过无障碍服务完成，包内已无任何 `Tools.System.shell` 调用。
+视频、小红书、快手三个采集包从 **0.2.0** 起都只需要权限档「**无障碍**」：不需要 Shizuku、不需要 root、不需要电脑。**抖音直播包例外**：直播间评论框 50 字上限让「目标 App 自己粘贴」这条路读不全口令，改用 `Tools.System.shell` 调 `service call clipboard`，需要「**调试器**」权限档（Shizuku）。驱动里的返回键、清空输入框走 `Tools.UI`；屏幕尺寸取自**无障碍根节点的 bounds**，不用 `Tools.System.getDeviceInfo()`——后者是宿主窗口的 displayMetrics，会跟着 insets 变（这台机器上取到过 1080×2163），与节点坐标不是一套空间。视频、小红书、快手三个包内已无任何 `Tools.System.shell` 调用，直播包只有剪贴板这一处用 shell。
 
 唯一一处不是标准原语的是**粘贴**：Android 10 起只有获得焦点的应用能读系统剪贴板，而采集时前台是目标 App，所以只能「让目标 App 自己粘」。做法是长按评论输入框，弹出目标 App 自己的粘贴工具条，再点工具条上的「粘贴」。**那个工具条不在无障碍节点树里**（实测：截图可见、同一时刻的树里没有含「粘贴」的节点，证据见 `../docs/TODO/collector_accessibility_only_20261015/`），所以只能按坐标点。坐标以「输入框左上角」为锚点，三个 App 实测值如下：
 
@@ -226,7 +261,7 @@ npx tsc -p my-packages/kuaishou-collector/tsconfig.json
 
 入口是「工作流」页右下角按钮展开后的「从模板新建」。模板列表里内置模板占了前几屏，插件模板在**最下面**，分区标题是「插件模板」。点一下就会生成一条可编辑的正式工作流，之后与包无关。
 
-三个包各带一个模板：「连续采集抖音并上报」「连续采集小红书并上报」「连续采集快手并上报」。模板里的关键词是静态参数（抖音 `美食`、小红书 `家装`、快手 `家装`），导入后可以直接改。
+四个包各带一个模板：「连续采集抖音并上报」「连续采集抖音直播并上报」「连续采集小红书并上报」「连续采集快手并上报」。模板里的关键词是静态参数（抖音 `美食`、抖音直播 `口腔医院`、小红书 `家装`、快手 `家装`），导入后可以直接改。
 
 模板里有连续触发与手动触发两个节点：连续触发用于无人值守，手动触发用于随时试跑，在编辑器右下的操作菜单里点「触发工作流」即可。只能连续触发的话，手动触发会直接空跑，日志里记 `没有手动触发类型的触发节点`。
 

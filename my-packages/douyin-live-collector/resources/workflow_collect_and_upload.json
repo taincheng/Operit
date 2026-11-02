@@ -1,0 +1,127 @@
+{
+  "id": "douyin-live-collect-and-upload-seed",
+  "name": "抖音直播采集与上报",
+  "description": "一轮先清一次积压，再采一片抖音直播间的分享链接，采完再上报一次；整轮结束后随机等 30–120 秒接着跑下一轮。带手动触发节点，方便随时试跑。导入后可按需修改关键词与间隔。",
+  "nodes": [
+    {
+      "__type": "com.ai.assistance.operit.data.model.TriggerNode",
+      "id": "trigger_schedule_douyin_live",
+      "type": "trigger",
+      "name": "连续运行：每轮结束等 30–120 秒",
+      "description": "上一轮整轮返回之后才开始计时，等完随机间隔接着跑下一轮；不是固定节拍空等。定时器只负责点火，分片与续跑逻辑都在采集脚本内",
+      "position": {
+        "x": 120.0,
+        "y": 120.0
+      },
+      "triggerType": "schedule",
+      "triggerConfig": {
+        "schedule_type": "continuous",
+        "min_gap_ms": "30000",
+        "max_gap_ms": "120000",
+        "enabled": "true"
+      }
+    },
+    {
+      "__type": "com.ai.assistance.operit.data.model.TriggerNode",
+      "id": "trigger_manual_douyin_live",
+      "type": "trigger",
+      "name": "手动触发",
+      "description": "在编辑器里点「触发工作流」时走这个节点，方便随时试跑一次",
+      "position": {
+        "x": 120.0,
+        "y": 460.0
+      },
+      "triggerType": "manual",
+      "triggerConfig": {}
+    },
+    {
+      "__type": "com.ai.assistance.operit.data.model.ExecuteNode",
+      "id": "execute_flush_backlog_live",
+      "type": "execute",
+      "name": "先清积压",
+      "description": "把上一轮没来得及上报的记录先送出去。放在采集之前是因为采集耗时长、可能被下一次点火打断，而上报只要几秒；这样任何一轮被中断，积压也会在下一轮开头清掉",
+      "position": {
+        "x": 760.0,
+        "y": 290.0
+      },
+      "actionType": "douyin_live_collector:douyin_live_outbox_flush",
+      "actionConfig": {},
+      "jsCode": null
+    },
+    {
+      "__type": "com.ai.assistance.operit.data.model.ExecuteNode",
+      "id": "execute_collect_chunk_live",
+      "type": "execute",
+      "name": "采一片直播间",
+      "description": "采到条数目标或时间上限就结束本片，进度写进 progress.json。连续模式下轮次密，时间上限收到 5 分钟，让整轮远早于宿主的单次执行上限",
+      "position": {
+        "x": 1400.0,
+        "y": 290.0
+      },
+      "actionType": "douyin_live_collector:douyin_live_collect_rooms",
+      "actionConfig": {
+        "keyword": {
+          "__type": "com.ai.assistance.operit.data.model.ParameterValue.StaticValue",
+          "value": "口腔医院"
+        },
+        "count": {
+          "__type": "com.ai.assistance.operit.data.model.ParameterValue.StaticValue",
+          "value": "5"
+        },
+        "chunk_minutes": {
+          "__type": "com.ai.assistance.operit.data.model.ParameterValue.StaticValue",
+          "value": "5"
+        }
+      },
+      "jsCode": null
+    },
+    {
+      "__type": "com.ai.assistance.operit.data.model.ExecuteNode",
+      "id": "execute_flush_outbox_live",
+      "type": "execute",
+      "name": "上报待发送记录",
+      "description": "把 outbox 里 pending 的记录按每批 20 条发给服务端。上报地址与令牌在工具箱的「抖音直播采集设置」页里配置，存在宿主环境变量里、不落文件",
+      "position": {
+        "x": 2040.0,
+        "y": 290.0
+      },
+      "actionType": "douyin_live_collector:douyin_live_outbox_flush",
+      "actionConfig": {},
+      "jsCode": null
+    }
+  ],
+  "connections": [
+    {
+      "id": "conn_douyin_live_schedule_to_flush",
+      "sourceNodeId": "trigger_schedule_douyin_live",
+      "targetNodeId": "execute_flush_backlog_live",
+      "condition": null
+    },
+    {
+      "id": "conn_douyin_live_manual_to_flush",
+      "sourceNodeId": "trigger_manual_douyin_live",
+      "targetNodeId": "execute_flush_backlog_live",
+      "condition": null
+    },
+    {
+      "id": "conn_douyin_live_flush_to_collect",
+      "sourceNodeId": "execute_flush_backlog_live",
+      "targetNodeId": "execute_collect_chunk_live",
+      "condition": null
+    },
+    {
+      "id": "conn_douyin_live_collect_to_flush",
+      "sourceNodeId": "execute_collect_chunk_live",
+      "targetNodeId": "execute_flush_outbox_live",
+      "condition": null
+    }
+  ],
+  "createdAt": 0,
+  "updatedAt": 0,
+  "enabled": true,
+  "lastExecutionTime": null,
+  "lastExecutionStatus": null,
+  "totalExecutions": 0,
+  "successfulExecutions": 0,
+  "failedExecutions": 0
+}
